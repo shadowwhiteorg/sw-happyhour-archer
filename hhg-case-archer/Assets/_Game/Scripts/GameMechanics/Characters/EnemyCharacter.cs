@@ -1,13 +1,18 @@
-﻿using _Game.Interfaces;
+﻿using _Game.Core;
+using _Game.Interfaces;
 using UnityEngine;
 
 namespace _Game.GameMechanics
 {
     public class EnemyCharacter : BaseCharacter
     {
-        public Vector3 GetPosition()
+        protected override void Die()
         {
-            return transform.position;
+            base.Die();
+            CombatManager.Instance.RemoveEnemy(this);
+            EventManager.FireOnEnemyDeath();
+            Destroy(gameObject);
         }
+        
     }
 }

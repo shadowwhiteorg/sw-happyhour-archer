@@ -23,6 +23,7 @@ namespace _Game.GameMechanics
         public void StartAttack()
         {
             Debug.Log("AttackingActor StartAttack");
+            weapon.SetCurrentTarget();
             StartCoroutine(RepeatedAttack());
         }
         

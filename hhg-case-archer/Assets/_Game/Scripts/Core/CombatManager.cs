@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using _Game.GameMechanics;
 using _Game.Interfaces;
 using _Game.Utils;
+using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace _Game.Core
 {
-    public class CombatManager : Singleton<CombatManager>
+    public class CombatManager : Utils.Singleton<CombatManager>
     {
         [SerializeField] private EnemyCharacter enemyPrefab;
         [SerializeField] private int enemyCount;
@@ -23,7 +24,7 @@ namespace _Game.Core
             _enemyQuadTree = new QuadTree<EnemyCharacter>(new Rect(-50,-50,100,100), 4);
             SpawnEnemies();
         }
-        
+
         private void SpawnEnemies()
         {
             for (int i = 0; i < enemyCount; i++)
@@ -37,11 +38,13 @@ namespace _Game.Core
         private void OnEnable()
         {
             EventManager.OnSearchEnemies += UpdateAllEnemyPositions;
+            EventManager.OnEnemyDeath += SpawnNewEnemy;
         }
 
         private void OnDisable()
         {
             EventManager.OnSearchEnemies -= UpdateAllEnemyPositions;
+            EventManager.OnEnemyDeath -= SpawnNewEnemy;
         }
         
         public void AddEnemy(EnemyCharacter enemy)
@@ -69,6 +72,12 @@ namespace _Game.Core
         {
             EventManager.FireOnEnemySearch();
             return _enemyQuadTree.FindNearest(position, searchRadius);
+        }
+
+        private void SpawnNewEnemy()
+        {
+            var enemy = Instantiate(enemyPrefab, spawnCenter.transform.position + new Vector3(Random.insideUnitSphere.x, 0, Random.insideUnitSphere.z) * spawnRadius, Quaternion.identity);
+            AddEnemy(enemy);
         }
         
         

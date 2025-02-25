@@ -13,6 +13,7 @@ namespace _Game.GameMechanics
         [SerializeField] private Rigidbody rigidbody;
         private ObjectPool<Projectile> _pool;
         private BaseWeapon _weapon;
+        private IDamageable _target;
         private float _shootingSpeed;
         private float _damage;
         private float _time;
@@ -24,12 +25,14 @@ namespace _Game.GameMechanics
         {
             _weapon = weapon;
             _shootingSpeed = weapon.ShootingSpeed;
-            _damage = weapon.ActiveProjectile.Damage;
+            _damage = weapon.ActiveProjectileData.Damage;
+            _target = weapon.CurrentTarget;
             _targetPosition = weapon.CurrentTarget.GetPosition();
             _behaviors.Clear();
             _behaviors.AddRange(behaviors);
             _pool = sourcePool;
         }
+        
 
         public void Launch()
         {
@@ -101,7 +104,7 @@ namespace _Game.GameMechanics
                 Debug.LogError("Not enough speed to reach the target!");
                 return;
             }
-            StartCoroutine(MoveUntilReachTargetAndThenSetPositionToTarget(velocity));
+            StartCoroutine(MoveUntilReachTargetAndThenSetPositionToTarget(velocity, _targetPosition, _target));
         }
         
         private bool CalculateLaunchVelocity(out Vector3 velocity)
@@ -142,9 +145,9 @@ namespace _Game.GameMechanics
         //     }
         // }
 
-        IEnumerator MoveUntilReachTargetAndThenSetPositionToTarget(Vector3 velocity)
+        IEnumerator MoveUntilReachTargetAndThenSetPositionToTarget(Vector3 velocity, Vector3 target, IDamageable targetDamageable)
         {
-            while (Vector3.Distance(transform.position, _targetPosition) > 1f)
+            while (Vector3.Distance(transform.position, target) > 1f)
             {
                 _time += Time.deltaTime;
 
@@ -153,7 +156,8 @@ namespace _Game.GameMechanics
                 transform.position = _startPosition + displacement;
                 yield return null;
             }
-            transform.position = _targetPosition;
+            transform.position = target;
+            targetDamageable.TakeDamage(_damage);
             ReturnToPool();
         }
 
@@ -170,6 +174,8 @@ namespace _Game.GameMechanics
 
         public void ReturnToPool()
         {
+            StopAllCoroutines();
+            _weapon.RemoveFromActiveProjectiles(this);
             _pool.Return(this);
         }
     }

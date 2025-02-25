@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using _Game.Core;
 using _Game.Enums;
 using _Game.Interfaces;
 using UnityEngine;
 using _Game.Utils;
+using Unity.VisualScripting;
 using UnityEngine.Serialization;
 
 namespace _Game.GameMechanics
@@ -17,15 +19,16 @@ namespace _Game.GameMechanics
         [SerializeField] private ProjectileData defaultProjectile;
         
         public float ShootingSpeed => weaponData.ShootingSpeed;
+        private List<Projectile> _activeProjectiles = new List<Projectile>();
         public float AttackRate => weaponData.AttackRate;
         public Transform FirePoint => firePoint;
         private BaseCharacter _owner;
         public BaseCharacter Owner => _owner;
         private Dictionary<ProjectileType, ObjectPool<Projectile>> _pools = new Dictionary<ProjectileType, ObjectPool<Projectile>>();
-        private ProjectileData _activeProjectile; // Stores the current projectile type
-        public ProjectileData ActiveProjectile => _activeProjectile;
-
-        public IDamageable CurrentTarget => CombatManager.Instance.FindNearestEnemy(transform.position, 20);
+        private ProjectileData _activeProjectileData; // Stores the current projectile type
+        public ProjectileData ActiveProjectileData => _activeProjectileData;
+        private IDamageable _currentTarget;
+        public IDamageable CurrentTarget => _currentTarget;
 
         private void Awake()
         {
@@ -37,7 +40,19 @@ namespace _Game.GameMechanics
         {
             _owner = character;
         }
-        
+
+        private void OnEnable()
+        {
+            EventManager.OnEnemyDeath += ClearActiveProjectiles;
+            EventManager.OnEnemyDeath += SetCurrentTarget;
+        }
+
+        private void OnDisable()
+        {
+            EventManager.OnEnemyDeath -= ClearActiveProjectiles;
+            EventManager.OnEnemyDeath -= SetCurrentTarget;
+        }
+
         private void InitializeProjectilePools()
         {
             foreach (var projectileData in allProjectiles)
@@ -49,18 +64,24 @@ namespace _Game.GameMechanics
             }
         }
 
+        public void SetCurrentTarget()
+        {
+            _currentTarget = CombatManager.Instance.FindNearestEnemy(transform.position, 20);
+        }
+
         public void Attack()
         {
-            if (_activeProjectile == null)
-                _activeProjectile = defaultProjectile;
+            if (_activeProjectileData == null)
+                _activeProjectileData = defaultProjectile;
 
-            List<ProjectileBehavior> behaviors = new List<ProjectileBehavior>(_activeProjectile.DefaultBehaviors);
+            List<ProjectileBehavior> behaviors = new List<ProjectileBehavior>(_activeProjectileData.DefaultBehaviors);
             behaviors.AddRange(extraBehaviors);
 
-            if (_pools.TryGetValue(_activeProjectile.Type, out var pool))
+            if (_pools.TryGetValue(_activeProjectileData.Type, out var pool))
             {
                 Projectile projectile = pool.Get();
                 projectile.Initialize(this, behaviors, pool);
+                AddToActiveProjectiles(projectile);
                 projectile.transform.position = firePoint.position;
                 projectile.transform.rotation = firePoint.rotation;
                 projectile.Launch();
@@ -72,15 +93,35 @@ namespace _Game.GameMechanics
             ProjectileData newProjectile = allProjectiles.Find(p => p.Type == newType);
             if (newProjectile != null)
             {
-                _activeProjectile = newProjectile;
+                _activeProjectileData = newProjectile;
                 Debug.Log($"Weapon switched to: {newType}");
             }
+        }
+        
+        private void AddToActiveProjectiles(Projectile projectile)
+        {
+            _activeProjectiles.Add(projectile);
+        }
+        
+        public void RemoveFromActiveProjectiles(Projectile projectile)
+        {
+            _activeProjectiles.Remove(projectile);
         }
 
         public void AddExtraBehavior(ProjectileBehavior behavior)
         {
             if (!extraBehaviors.Contains(behavior))
                 extraBehaviors.Add(behavior);
+        }
+        
+        private void ClearActiveProjectiles()
+        {
+            List<Projectile> toRemove = new List<Projectile>();
+            toRemove.AddRange(_activeProjectiles);
+            foreach (var projectile in toRemove)
+            {
+                projectile?.ReturnToPool();
+            }
         }
     }
 }
