@@ -3,19 +3,20 @@ using UnityEngine.Serialization;
 
 namespace _Game.GameMechanics
 {
+    [RequireComponent(typeof(BaseCharacter))]
     public class ActorComponent : MonoBehaviour
     {
 
-        private BaseCharacter _character;
+        protected BaseCharacter _character;
         public BaseCharacter Character => _character;
         
         [HideInInspector]
         public bool IsInitialized;
-        public virtual void Initialize(BaseCharacter character)
+        public virtual void Initialize(BaseCharacter character = null)
         {
             if (IsInitialized)
                 return;
-            _character = character;
+            _character = GetComponent<BaseCharacter>();
             IsInitialized = true;
         }
     }

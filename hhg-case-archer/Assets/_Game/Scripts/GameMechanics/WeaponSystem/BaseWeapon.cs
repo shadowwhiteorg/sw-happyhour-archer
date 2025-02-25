@@ -4,17 +4,23 @@ using _Game.Enums;
 using _Game.Interfaces;
 using UnityEngine;
 using _Game.Utils;
+using UnityEngine.Serialization;
+
 namespace _Game.GameMechanics
 {
     public class BaseWeapon : MonoBehaviour
     {
-        [SerializeField] private Transform _firePoint;
-        [SerializeField] private List<ProjectileData> _allProjectiles;
-        [SerializeField] private List<ProjectileBehavior> _extraBehaviors;
-        [SerializeField] private WeaponData _weaponData;
+        [SerializeField] private Transform firePoint;
+        [SerializeField] private List<ProjectileData> allProjectiles;
+        [SerializeField] private List<ProjectileBehavior> extraBehaviors;
+        [SerializeField] private WeaponData weaponData;
+        [SerializeField] private ProjectileData defaultProjectile;
         
-        public float ShootingSpeed => _weaponData.ShootingSpeed;
-    
+        public float ShootingSpeed => weaponData.ShootingSpeed;
+        public float AttackRate => weaponData.AttackRate;
+        public Transform FirePoint => firePoint;
+        private BaseCharacter _owner;
+        public BaseCharacter Owner => _owner;
         private Dictionary<ProjectileType, ObjectPool<Projectile>> _pools = new Dictionary<ProjectileType, ObjectPool<Projectile>>();
         private ProjectileData _activeProjectile; // Stores the current projectile type
         public ProjectileData ActiveProjectile => _activeProjectile;
@@ -27,36 +33,43 @@ namespace _Game.GameMechanics
             SetActiveProjectile(ProjectileType.Default); // Default projectile type
         }
 
+        public void Initialize(BaseCharacter character)
+        {
+            _owner = character;
+        }
+        
         private void InitializeProjectilePools()
         {
-            foreach (var projectileData in _allProjectiles)
+            foreach (var projectileData in allProjectiles)
             {
                 if (!_pools.ContainsKey(projectileData.Type))
                 {
-                    _pools[projectileData.Type] = new ObjectPool<Projectile>(projectileData.Prefab.GetComponent<Projectile>(), 10);
+                    _pools[projectileData.Type] = new ObjectPool<Projectile>(projectileData.Prefab.GetComponent<Projectile>(), 10,this.transform);
                 }
             }
         }
 
         public void Attack()
         {
-            if (_activeProjectile == null) return;
+            if (_activeProjectile == null)
+                _activeProjectile = defaultProjectile;
 
             List<ProjectileBehavior> behaviors = new List<ProjectileBehavior>(_activeProjectile.DefaultBehaviors);
-            behaviors.AddRange(_extraBehaviors);
+            behaviors.AddRange(extraBehaviors);
 
             if (_pools.TryGetValue(_activeProjectile.Type, out var pool))
             {
                 Projectile projectile = pool.Get();
-                projectile.Initialize(this, behaviors);
-                projectile.transform.position = _firePoint.position;
-                projectile.transform.rotation = _firePoint.rotation;
+                projectile.Initialize(this, behaviors, pool);
+                projectile.transform.position = firePoint.position;
+                projectile.transform.rotation = firePoint.rotation;
+                projectile.Launch();
             }
         }
 
         public void SetActiveProjectile(ProjectileType newType)
         {
-            ProjectileData newProjectile = _allProjectiles.Find(p => p.Type == newType);
+            ProjectileData newProjectile = allProjectiles.Find(p => p.Type == newType);
             if (newProjectile != null)
             {
                 _activeProjectile = newProjectile;
@@ -66,8 +79,8 @@ namespace _Game.GameMechanics
 
         public void AddExtraBehavior(ProjectileBehavior behavior)
         {
-            if (!_extraBehaviors.Contains(behavior))
-                _extraBehaviors.Add(behavior);
+            if (!extraBehaviors.Contains(behavior))
+                extraBehaviors.Add(behavior);
         }
     }
 }

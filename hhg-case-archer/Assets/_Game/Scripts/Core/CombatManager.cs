@@ -4,18 +4,35 @@ using _Game.GameMechanics;
 using _Game.Interfaces;
 using _Game.Utils;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace _Game.Core
 {
     public class CombatManager : Singleton<CombatManager>
     {
+        [SerializeField] private EnemyCharacter enemyPrefab;
+        [SerializeField] private int enemyCount;
+        [SerializeField] private float spawnRadius;
+        [SerializeField] private GameObject spawnCenter;
+        
         private QuadTree<EnemyCharacter> _enemyQuadTree;
         private List<EnemyCharacter> _enemies = new List<EnemyCharacter>();
 
         private void Start()
         {
             _enemyQuadTree = new QuadTree<EnemyCharacter>(new Rect(-50,-50,100,100), 4);
+            SpawnEnemies();
         }
+        
+        private void SpawnEnemies()
+        {
+            for (int i = 0; i < enemyCount; i++)
+            {
+                var enemy = Instantiate(enemyPrefab, spawnCenter.transform.position + new Vector3(Random.insideUnitSphere.x, 0, Random.insideUnitSphere.z) * spawnRadius, Quaternion.identity);
+                AddEnemy(enemy);
+            }
+        }
+        
 
         private void OnEnable()
         {

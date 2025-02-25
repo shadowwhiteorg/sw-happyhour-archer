@@ -14,15 +14,15 @@ namespace _Game.GameMechanics
     [SerializeField] private bool hasAttack;
     public CharacterState CharacterState;
 
-    [HideInInspector] public MovingActor MovingActor;
-    [HideInInspector] public AttackingActor AttackingActor;
+    public MovingActor MovingActor => GetComponent<MovingActor>();
+    public AttackingActor AttackingActor => GetComponent<AttackingActor>();
 
     protected virtual void Awake()
     {
-        if (hasMovement)
-            MovingActor = gameObject.AddComponent<MovingActor>();
-        if (hasAttack)
-            AttackingActor = gameObject.AddComponent<AttackingActor>();
+        // if (hasMovement)
+        //     MovingActor = gameObject.AddComponent<MovingActor>();
+        // if (hasAttack)
+        //     AttackingActor = gameObject.AddComponent<AttackingActor>();
     }
 
     public float GetDamage()
@@ -38,7 +38,7 @@ namespace _Game.GameMechanics
 
     public Vector3 GetPosition()
     {
-        throw new System.NotImplementedException();
+        return transform.position;
     }
 
     public void ApplyProjectileEffect(ProjectileBehavior projectileBehavior)

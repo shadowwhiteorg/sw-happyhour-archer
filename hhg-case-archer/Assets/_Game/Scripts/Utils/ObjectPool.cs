@@ -45,6 +45,7 @@ namespace _Game.Utils
         public void Return(T obj)
         {
             obj.gameObject.SetActive(false);
+            obj.transform.position = _parent.position;
             _pool.Enqueue(obj);
         }
     }

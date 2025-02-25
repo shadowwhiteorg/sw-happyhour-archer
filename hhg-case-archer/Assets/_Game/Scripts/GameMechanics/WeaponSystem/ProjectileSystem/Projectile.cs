@@ -20,7 +20,7 @@ namespace _Game.GameMechanics
         private Vector3 _startPosition;
         private List<ProjectileBehavior> _behaviors = new List<ProjectileBehavior>();
 
-        public void Initialize(BaseWeapon weapon, List<ProjectileBehavior> behaviors)
+        public void Initialize(BaseWeapon weapon, List<ProjectileBehavior> behaviors, ObjectPool<Projectile> sourcePool)
         {
             _weapon = weapon;
             _shootingSpeed = weapon.ShootingSpeed;
@@ -28,6 +28,20 @@ namespace _Game.GameMechanics
             _targetPosition = weapon.CurrentTarget.GetPosition();
             _behaviors.Clear();
             _behaviors.AddRange(behaviors);
+            _pool = sourcePool;
+        }
+
+        public void Launch()
+        {
+            Debug.Log("Projectile launched");
+            if (usingUnityPhysics)
+            {
+                UnityPhysicsLaunch(_weapon.FirePoint.position, _targetPosition);
+            }
+            else
+            {
+                KinematicLaunch(_weapon.FirePoint.position, _targetPosition);
+            }
         }
 
 
@@ -120,17 +134,17 @@ namespace _Game.GameMechanics
         }
         
 
-        private void OnTriggerEnter(Collider other)
-        {
-            if (other.TryGetComponent<IDamageable>(out var damageable))
-            {
-                OnHit(damageable);
-            }
-        }
+        // private void OnTriggerEnter(Collider other)
+        // {
+        //     if (other.TryGetComponent<IDamageable>(out var damageable))
+        //     {
+        //         OnHit(damageable);
+        //     }
+        // }
 
         IEnumerator MoveUntilReachTargetAndThenSetPositionToTarget(Vector3 velocity)
         {
-            while (Vector3.Distance(transform.position, _targetPosition) > 0.1f)
+            while (Vector3.Distance(transform.position, _targetPosition) > 1f)
             {
                 _time += Time.deltaTime;
 
@@ -143,15 +157,16 @@ namespace _Game.GameMechanics
             ReturnToPool();
         }
 
-        private void OnHit(IDamageable target)
-        {
-            target.TakeDamage(_damage);
-            foreach (var behavior in _behaviors)
-            {
-                behavior.ApplyEffect(this, target);
-            }
-            ReturnToPool();
-        }
+        // private void OnHit(IDamageable target)
+        // {
+        //     if(Vector3.Distance(transform.position, target.GetPosition()) > 0.1f) return;
+        //     target.TakeDamage(_damage);
+        //     foreach (var behavior in _behaviors)
+        //     {
+        //         behavior.ApplyEffect(this, target);
+        //     }
+        //     ReturnToPool();
+        // }
 
         public void ReturnToPool()
         {

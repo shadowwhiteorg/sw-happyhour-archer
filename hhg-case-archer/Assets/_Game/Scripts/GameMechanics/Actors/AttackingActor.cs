@@ -5,22 +5,19 @@ using UnityEngine;
 
 namespace _Game.GameMechanics
 {
+    
     public class AttackingActor : ActorComponent
     {
         [SerializeField] private BaseWeapon weapon;
         public override void Initialize(BaseCharacter character)
         {
-            base.Initialize(character);
-            // weapon.Initialize(character);
-            Debug.Log("AttackingActor initialized");
+            base.Initialize();
         }
         
         public void Attack()
         {
-            Debug.Log("AttackingActor Attack");
             // Set Search radius ( = 20 ) to Attack Range -> StatSystem Implementation
             weapon.Attack();
-            // weapon.Attack();
         }
 
         public void StartAttack()
@@ -32,7 +29,7 @@ namespace _Game.GameMechanics
         public void Stop()
         {
             Debug.Log("AttackingActor Stop");
-            StopCoroutine(RepeatedAttack());
+            StopAllCoroutines();
         }
         
         IEnumerator RepeatedAttack()
@@ -40,7 +37,7 @@ namespace _Game.GameMechanics
             while (true)
             {
                 Attack();
-                yield return new WaitForSeconds(1);
+                yield return new WaitForSeconds(_character.AttackingActor.weapon.AttackRate);
             }
         }
         

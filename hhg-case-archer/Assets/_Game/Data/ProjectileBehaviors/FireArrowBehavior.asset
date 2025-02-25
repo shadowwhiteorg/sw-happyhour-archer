@@ -9,12 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 654b6b3c586e41ef937ec7cd2e5a1b7f, type: 3}
-  m_Name: ArrowWeaponData
+  m_Script: {fileID: 11500000, guid: 3139fe24564f45f891a2f41d38146aa5, type: 3}
+  m_Name: FireArrowBehavior
   m_EditorClassIdentifier: 
-  WeaponID: 
-  AttackRate: 0
-  HasAngularAttack: 0
-  AttackCount: 0
-  MuzzleParticle: {fileID: 0}
-  DefaultProjectile: {fileID: 0}

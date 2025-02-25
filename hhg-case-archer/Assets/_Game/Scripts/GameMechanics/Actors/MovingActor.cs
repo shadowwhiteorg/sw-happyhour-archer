@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.AI;
 
 namespace _Game.GameMechanics
@@ -10,7 +11,6 @@ namespace _Game.GameMechanics
         [SerializeField] private float rotationSpeed;
         public bool IsMoving => _navMeshAgent.velocity.sqrMagnitude>  0.1f;
         private NavMeshAgent _navMeshAgent;
-        
 
         public override void Initialize(BaseCharacter character)
         {
@@ -22,7 +22,9 @@ namespace _Game.GameMechanics
         
         public void Move(Vector2 direction)
         {
-            _navMeshAgent.Move(new Vector3(direction.x, 0, direction.y));
+            _navMeshAgent.SetDestination(_navMeshAgent.transform.position + new Vector3(direction.x, 0, direction.y));
+            // _navMeshAgent.Move(new Vector3(direction.x, 0, direction.y) * (Time.deltaTime * speed));
+            // _navMeshAgent.transform.LookAt(_navMeshAgent.transform.position + new Vector3(direction.x, 0, direction.y));
         }
 
         public void Stop()

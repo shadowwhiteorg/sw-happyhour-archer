@@ -1,4 +1,5 @@
-﻿using _Game.Interfaces;
+﻿using _Game.Enums;
+using _Game.Interfaces;
 using UnityEngine;
 
 namespace _Game.GameMechanics
@@ -8,6 +9,8 @@ namespace _Game.GameMechanics
         public void EnterState(BaseCharacter character)
         {
             character.AttackingActor?.Initialize(character);
+            character.CharacterState = CharacterState.Attacking;
+            character.AttackingActor?.StartAttack();
         }
 
         public void UpdateState(BaseCharacter character)
@@ -17,7 +20,7 @@ namespace _Game.GameMechanics
 
         public void ExitState(BaseCharacter character)
         {
-            
+            character.AttackingActor?.Stop();
         }
     }
 }

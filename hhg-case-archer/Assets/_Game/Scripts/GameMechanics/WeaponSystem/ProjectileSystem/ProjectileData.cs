@@ -8,8 +8,7 @@ namespace _Game.GameMechanics
     public class ProjectileData : ScriptableObject
     {
         public ProjectileType Type;
-        public GameObject Prefab;
-        public float Speed;
+        public Projectile Prefab;
         public float Damage;
         public List<ProjectileBehavior> DefaultBehaviors;
     }
