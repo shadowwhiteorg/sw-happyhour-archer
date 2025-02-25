@@ -113,12 +113,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 064711f3a8dc4e17949ab01b80243b31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseDamage: 0
-  hasMovement: 0
-  hasAttack: 0
+  statConfig: {fileID: 11400000, guid: 287f86c05318c5142a946a0373dc1239, type: 2}
   CharacterState: 0
-  MovingActor: {fileID: 0}
-  AttackingActor: {fileID: 0}
 --- !u!1 &9008965947331827826
 GameObject:
   m_ObjectHideFlags: 0
