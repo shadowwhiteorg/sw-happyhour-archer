@@ -36,24 +36,18 @@ namespace _Game.InputSystem
         private void Update()
         {
             if (Input.GetMouseButtonDown(0))
-            {
-                Debug.Log("Clicked");
                 EventManager.FireOnMoveStart(_player);
-            }
             if(Input.GetMouseButtonUp(0))
                 EventManager.FireOnMoveEnd(_player);
-            
-            if(_hasControl)
+            if(Input.GetMouseButton(0))
                 HandleInput();
         }
         
         private void HandleInput()
         {
-            if (Input.GetMouseButton(0))
-            {
-                JoystickHandler.Instance.UpdateJoystickPosition(Input.mousePosition);
-                _player.MovingActor.Move(InputDirection(Input.mousePosition));
-            }
+            if(!_hasControl) return;
+            JoystickHandler.Instance.UpdateJoystickPosition(Input.mousePosition);
+            _player.MovingActor.Move(InputDirection(Input.mousePosition));
         }
 
         private Vector2 InputDirection(Vector3 currentMousePosition)

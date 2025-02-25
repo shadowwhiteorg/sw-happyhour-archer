@@ -8,6 +8,8 @@ namespace _Game.Core
     {
         public static event Action<BaseCharacter> OnMoveStart;
         public static event Action<BaseCharacter> OnMoveEnd;
+
+        public static event Action OnSearchEnemies;
         
         public static void FireOnMoveStart(BaseCharacter character)
         {
@@ -18,7 +20,11 @@ namespace _Game.Core
         {
             OnMoveEnd?.Invoke(character);
         }
-        
+
+        public static void FireOnEnemySearch()
+        {
+            
+        }
         
     }
 }

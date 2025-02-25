@@ -6,6 +6,5 @@ namespace _Game.Core
     public class GameManager : Singleton<GameManager>
     {
     
-    
     }
 }

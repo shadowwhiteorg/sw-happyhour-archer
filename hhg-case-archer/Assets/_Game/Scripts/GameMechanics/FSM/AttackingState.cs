@@ -7,7 +7,7 @@ namespace _Game.GameMechanics
     {
         public void EnterState(BaseCharacter character)
         {
-            character.AttackingActor?.Initialize();
+            character.AttackingActor?.Initialize(character);
         }
 
         public void UpdateState(BaseCharacter character)

@@ -12,9 +12,9 @@ namespace _Game.GameMechanics
         private NavMeshAgent _navMeshAgent;
         
 
-        public override void Initialize()
+        public override void Initialize(BaseCharacter character)
         {
-            base.Initialize();
+            base.Initialize(character);
             _navMeshAgent = GetComponent<NavMeshAgent>();
             _navMeshAgent.speed = speed;
             _navMeshAgent.angularSpeed = rotationSpeed;
