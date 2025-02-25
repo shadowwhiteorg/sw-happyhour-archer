@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Type: 0
   Prefab: {fileID: 3757831738358278094, guid: 892ff51145fe08a42a87c771ba38980f, type: 3}
-  Damage: 5
+  Damage: 20
   DefaultBehaviors:
   - {fileID: 11400000, guid: 07022bc2fd7a715468797744ea4cc3d7, type: 2}
