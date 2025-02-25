@@ -1,0 +1,26 @@
+﻿using _Game.Enums;
+using _Game.Interfaces;
+using UnityEngine;
+
+namespace _Game.GameMechanics
+{
+    public class AttackingState : ICharacterState
+    {
+        public void EnterState(BaseCharacter character)
+        {
+            character.AttackingActor?.Initialize(character);
+            character.CharacterState = CharacterState.Attacking;
+            character.AttackingActor?.StartAttack();
+        }
+
+        public void UpdateState(BaseCharacter character)
+        {
+            
+        }
+
+        public void ExitState(BaseCharacter character)
+        {
+            character.AttackingActor?.Stop();
+        }
+    }
+}
