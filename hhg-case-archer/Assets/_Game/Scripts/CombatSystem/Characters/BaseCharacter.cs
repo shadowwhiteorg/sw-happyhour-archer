@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections;
 using _Game.Enums;
 using _Game.Interfaces;
 using _Game.Managers;
@@ -14,6 +15,7 @@ namespace _Game.CombatSystem
         [SerializeField] private List<BaseSkill> initialSkills;
         [SerializeField] private List<BaseSkill> activeSkills;
         private float _baseHealth = 100;
+        private float _burnTimer;
         public float Health => StatController.GetStatValue(StatType.Health);
         
         public CharacterState CharacterState;
@@ -41,7 +43,37 @@ namespace _Game.CombatSystem
         {
             return transform.position;
         }
+
+        public void ApplyStatusEffect(StatusEffectType statusEffect, float effectDuration, float effectValue)
+        {
+            switch (statusEffect)
+            {
+                case StatusEffectType.Fire:
+                    Debug.Log("Burned");
+                    _burnTimer = 0;
+                    StartCoroutine(ExtendedTakeDamage());
+                    break;
+            }
+            
+        }
         
+        private IEnumerator ExtendedTakeDamage()
+        {
+           
+            while(_burnTimer <= StatController.GetStatValue(StatType.BurnDamageDuration))
+            {
+                for (int i = 0; i < 100; i++)
+                {
+                    Debug.Log("Burning" + StatController.GetStatValue(StatType.BurnDamage));
+                    // TakeDamage(StatController.GetStatValue(StatType.BurnDamage));
+                    TakeDamage(12);
+                    yield return new WaitForSeconds(1f);
+                }
+                _burnTimer += Time.deltaTime;
+            }
+            yield return null;
+        }
+
         public float GetDamage()
         {
             return StatController.GetStatValue(StatType.AttackDamage);
@@ -49,6 +81,7 @@ namespace _Game.CombatSystem
 
         public void TakeDamage(float damage)
         {
+            Debug.Log("Taking Damage "+damage);
             _baseHealth -= damage;
             if (_baseHealth <= 0)
             {

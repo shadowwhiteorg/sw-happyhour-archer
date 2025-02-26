@@ -8,7 +8,7 @@ namespace _Game.CombatSystem
     [CreateAssetMenu(fileName = "ProjectileData", menuName = "CombatSystem/Projectile/Projectile Data", order = 0)]
     public class ProjectileData : ScriptableObject
     {
-        public ProjectileType Type;
+        public StatusEffectType Type;
         public Projectile Prefab;
         public float Damage;
         public List<ProjectileBehavior> DefaultBehaviors;

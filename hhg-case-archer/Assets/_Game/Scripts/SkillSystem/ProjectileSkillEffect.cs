@@ -1,4 +1,5 @@
 ﻿using _Game.CombatSystem;
+using _Game.Enums;
 using UnityEngine;
 
 namespace _Game.SkillSystem
@@ -10,11 +11,13 @@ namespace _Game.SkillSystem
         [SerializeField] private float duration;
         public override void ApplyEffect(BaseCharacter character)
         {
+            character.AttackingActor.Weapon.SetActiveProjectile(projectileBehavior.StatusEffectType);
             character.AttackingActor.Weapon.AddExtraProjectileBehavior(projectileBehavior);
         }
 
         public override void RemoveEffect(BaseCharacter character)
         {
+            character.AttackingActor.Weapon.SetActiveProjectile(StatusEffectType.Default);
             character.AttackingActor.Weapon.RemoveProjectileBehavior(projectileBehavior);
         }
     }

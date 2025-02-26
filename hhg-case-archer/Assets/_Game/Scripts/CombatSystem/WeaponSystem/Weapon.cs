@@ -24,7 +24,7 @@ namespace _Game.CombatSystem
         public Transform FirePoint => firePoint;
         private BaseCharacter _owner;
         public BaseCharacter Owner => _owner;
-        private Dictionary<ProjectileType, ObjectPool<Projectile>> _pools = new Dictionary<ProjectileType, ObjectPool<Projectile>>();
+        private Dictionary<StatusEffectType, ObjectPool<Projectile>> _pools = new Dictionary<StatusEffectType, ObjectPool<Projectile>>();
         private ProjectileData _activeProjectileData; // Stores the current projectile type
         public ProjectileData ActiveProjectileData => _activeProjectileData;
         private IDamageable _currentTarget;
@@ -33,7 +33,7 @@ namespace _Game.CombatSystem
         private void Awake()
         {
             InitializeProjectilePools();
-            SetActiveProjectile(ProjectileType.Default); // Default projectile type
+            SetActiveProjectile(StatusEffectType.Default); // Default projectile type
         }
 
         public void Initialize(BaseCharacter character)
@@ -88,7 +88,7 @@ namespace _Game.CombatSystem
             }
         }
 
-        public void SetActiveProjectile(ProjectileType newType)
+        public void SetActiveProjectile(StatusEffectType newType)
         {
             ProjectileData newProjectile = allProjectiles.Find(p => p.Type == newType);
             if (newProjectile != null)

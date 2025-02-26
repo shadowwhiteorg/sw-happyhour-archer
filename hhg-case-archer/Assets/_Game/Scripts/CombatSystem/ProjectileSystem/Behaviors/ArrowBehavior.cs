@@ -1,7 +1,8 @@
-﻿using _Game.Interfaces;
+﻿using _Game.CombatSystem;
+using _Game.Interfaces;
 using UnityEngine;
 
-namespace _Game.CombatSystem
+namespace _Game.Scripts.CombatSystem.ProjectileSystem.Behaviors
 {
     [CreateAssetMenu(fileName = "ArrowBehavior", menuName = "CombatSystem/Projectile/ProjectileBehaviors/ArrowBehavior", order = 0)]
     public class ArrowBehavior : ProjectileBehavior
