@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using _Game.Enums;
 using UnityEngine;
 
 namespace _Game.CombatSystem
@@ -34,7 +35,12 @@ namespace _Game.CombatSystem
         {
             while (true)
             {
-                Attack();
+                for (int i = 0; i < _character.StatController.GetStatValue(StatType.AttackCount); i++)
+                {
+                    Attack();
+                    yield return new WaitForSeconds(0.2f);
+                }
+                
                 yield return new WaitForSeconds(_character.AttackingActor.weapon.AttackRate);
             }
         }

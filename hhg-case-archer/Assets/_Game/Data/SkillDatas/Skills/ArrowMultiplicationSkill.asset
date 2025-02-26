@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0eded3d9d26747808ab82f47db34d705, type: 3}
-  m_Name: DoubleShotSkill
+  m_Name: ArrowMultiplicationSkill
   m_EditorClassIdentifier: 
-  skillName: Extra Shot
-  description: Bonus Projectile
+  skillName: Arrow Multiplication
+  description: Extra Arrow
   skillType: 3
   cooldown: 0
   cost: 0
   icon: {fileID: 0}
   skillEffects:
-  - {fileID: 11400000, guid: e59c861e4448e6d47b7947f8dccb6310, type: 2}
+  - {fileID: 11400000, guid: 63b0c78aebed068469ca9c101190e5ef, type: 2}

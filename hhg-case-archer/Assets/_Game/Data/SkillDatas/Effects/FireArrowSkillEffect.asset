@@ -9,10 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3842f714eb9b4578b7a7229a91a324b8, type: 3}
-  m_Name: ExtraRicochetSkillData
+  m_Script: {fileID: 11500000, guid: b7080536034349ad8e1eeafa39613127, type: 3}
+  m_Name: FireArrowSkillEffect
   m_EditorClassIdentifier: 
-  statType: 6
-  value: 1
-  modifierType: 1
+  projectileBehavior: {fileID: 11400000, guid: 7f48e8d2eb98d734abee8310a40a60e9, type: 2}
   duration: 0
