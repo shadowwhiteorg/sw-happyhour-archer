@@ -17,6 +17,7 @@ namespace _Game.SkillSystem.StatSkills
         {
             var modifier = new StatModifier(value, modifierType,duration);
             character.StatController.AddStatModifier(statType, modifier);
+            Debug.Log("StatSkillEffect ApplyEffect");
         }
 
         public override void RemoveEffect(BaseCharacter character)

@@ -8,6 +8,5 @@ namespace _Game.Interfaces
     {
         void TakeDamage(float damage);
         Vector3 GetPosition();
-        void ApplyProjectileEffect(ProjectileBehavior projectileBehavior);
     }
 }

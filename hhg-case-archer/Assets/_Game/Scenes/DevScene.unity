@@ -1461,7 +1461,7 @@ MonoBehaviour:
   firePoint: {fileID: 1790491643}
   allProjectiles:
   - {fileID: 11400000, guid: dbcd47f9ecf9b6640b89a014d192d197, type: 2}
-  extraBehaviors: []
+  extraProjectileBehaviors: []
   weaponData: {fileID: 11400000, guid: c3a31e21c770e4847a2632537a99d6a4, type: 2}
   defaultProjectile: {fileID: 11400000, guid: dbcd47f9ecf9b6640b89a014d192d197, type: 2}
 --- !u!4 &1728105069
@@ -1549,8 +1549,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsInitialized: 0
-  speed: 20
-  rotationSpeed: 500
 --- !u!1 &1942864338
 GameObject:
   m_ObjectHideFlags: 0
@@ -1716,7 +1714,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2550371993042414973, guid: 3b7ade15c3fd45a46b4cbf7b3454a560, type: 3}
       propertyPath: m_Acceleration
-      value: 200
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 2550371993042414973, guid: 3b7ade15c3fd45a46b4cbf7b3454a560, type: 3}
+      propertyPath: m_AngularSpeed
+      value: 360
       objectReference: {fileID: 0}
     - target: {fileID: 3124349780636290615, guid: 3b7ade15c3fd45a46b4cbf7b3454a560, type: 3}
       propertyPath: m_Name
@@ -1766,6 +1768,14 @@ PrefabInstance:
       propertyPath: statConfig
       value: 
       objectReference: {fileID: 11400000, guid: af0853bb912a2104f887cdb6cf08948e, type: 2}
+    - target: {fileID: 7006120306534885907, guid: 3b7ade15c3fd45a46b4cbf7b3454a560, type: 3}
+      propertyPath: initialSkills.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7006120306534885907, guid: 3b7ade15c3fd45a46b4cbf7b3454a560, type: 3}
+      propertyPath: 'initialSkills.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 17b9865e2e200f54ebd306405c1dc448, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:

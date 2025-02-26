@@ -5,7 +5,8 @@ using UnityEngine;
 
 namespace _Game.SkillSystem
 {
-    public abstract class BaseSkill : ScriptableObject
+    [CreateAssetMenu(fileName = "BaseSkill", menuName = "SkillSystem/BaseSkill", order = 0)]
+    public class BaseSkill : ScriptableObject
     {
         [SerializeField] private string skillName;
         [SerializeField] private string description;

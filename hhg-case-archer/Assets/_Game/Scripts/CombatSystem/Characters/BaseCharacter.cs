@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using _Game.Enums;
 using _Game.Interfaces;
 using _Game.SkillSystem;
@@ -9,15 +10,15 @@ namespace _Game.CombatSystem
 {
     public class BaseCharacter : MonoBehaviour , IDamageable
     {
-        // TODO: Use it untill stat system is implemented
         [SerializeField] private StatConfig statConfig;
+        [SerializeField] private List<BaseSkill> initialSkills;
+        [SerializeField] private List<BaseSkill> activeSkills;
         private float _baseHealth = 100;
         public float Health => StatController.GetStatValue(StatType.Health);
         
         public CharacterState CharacterState;
 
         public StatController StatController;
-    
         public MovingActor MovingActor => GetComponent<MovingActor>();
         public AttackingActor AttackingActor => GetComponent<AttackingActor>();
 
@@ -30,13 +31,21 @@ namespace _Game.CombatSystem
         {
             StatController = new StatController(statConfig);
             _baseHealth = Health;
+            foreach (var skill in initialSkills)
+            {
+                LearnSkill(skill);
+            }
         }
-    
+        
+        public virtual Vector3 GetPosition()
+        {
+            return transform.position;
+        }
+        
         public float GetDamage()
         {
             return StatController.GetStatValue(StatType.AttackDamage);
         }
-
 
         public void TakeDamage(float damage)
         {
@@ -47,20 +56,22 @@ namespace _Game.CombatSystem
             }
         }
 
-        public virtual Vector3 GetPosition()
-        {
-            return transform.position;
-        }
-
-        public void ApplyProjectileEffect(ProjectileBehavior projectileBehavior)
-        {
-            // throw new NotImplementedException();
-        }
-
-
         protected virtual void Die()
         {
-            //Destroy(gameObject);
+            
         }
+        
+        public void LearnSkill(BaseSkill skill)
+        {
+            skill.ApplySkill(this);
+            activeSkills.Add(skill);
+        }
+
+        public void RemoveSkill(BaseSkill skill)
+        {
+            skill.RemoveSkill(this);
+            activeSkills.Remove(skill);
+        }
+        
     }
 }
