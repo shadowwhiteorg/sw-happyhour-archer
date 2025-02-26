@@ -34,7 +34,6 @@ namespace _Game.CombatSystem
     
         public float GetDamage()
         {
-            // Modify after stat system is implemented
             return StatController.GetStatValue(StatType.AttackDamage);
         }
 
@@ -52,12 +51,13 @@ namespace _Game.CombatSystem
         {
             return transform.position;
         }
-    
+
         public void ApplyProjectileEffect(ProjectileBehavior projectileBehavior)
         {
-            // throw new System.NotImplementedException();
+            // throw new NotImplementedException();
         }
-        
+
+
         protected virtual void Die()
         {
             //Destroy(gameObject);

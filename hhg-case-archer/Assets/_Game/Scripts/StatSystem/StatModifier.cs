@@ -9,11 +9,11 @@ namespace _Game.StatSystem
         public bool IsTemporary;
         public float Duration;
     
-        public StatModifier(float value, ModifierType type, bool isTemporary = false, float duration = 0)
+        public StatModifier(float value, ModifierType type,  float duration = 0)
         {
             Value = value;
             Type = type;
-            IsTemporary = isTemporary;
+            IsTemporary =  !(duration > 0);
             Duration = duration;
         }
     }

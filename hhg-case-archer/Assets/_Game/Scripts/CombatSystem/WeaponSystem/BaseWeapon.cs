@@ -6,6 +6,7 @@ using _Game.Interfaces;
 using _Game.SkillSystem;
 using UnityEngine;
 using _Game.Utils;
+using UnityEngine.Serialization;
 
 namespace _Game.CombatSystem
 {
@@ -13,7 +14,7 @@ namespace _Game.CombatSystem
     {
         [SerializeField] private Transform firePoint;
         [SerializeField] private List<ProjectileData> allProjectiles;
-        [SerializeField] private List<ProjectileBehavior> extraBehaviors;
+        [FormerlySerializedAs("extraBehaviors")] [SerializeField] private List<ProjectileBehavior> extraProjectileBehaviors;
         [SerializeField] private WeaponData weaponData;
         [SerializeField] private ProjectileData defaultProjectile;
         
@@ -73,13 +74,13 @@ namespace _Game.CombatSystem
             if (_activeProjectileData == null)
                 _activeProjectileData = defaultProjectile;
 
-            List<ProjectileBehavior> behaviors = new List<ProjectileBehavior>(_activeProjectileData.DefaultBehaviors);
-            behaviors.AddRange(extraBehaviors);
+            List<ProjectileBehavior> projectileBehaviors = new List<ProjectileBehavior>(_activeProjectileData.DefaultBehaviors);
+            projectileBehaviors.AddRange(extraProjectileBehaviors);
 
             if (_pools.TryGetValue(_activeProjectileData.Type, out var pool))
             {
                 Projectile projectile = pool.Get();
-                projectile.Initialize(this, behaviors, pool);
+                projectile.Initialize(this, projectileBehaviors, pool);
                 AddToActiveProjectiles(projectile);
                 projectile.transform.position = firePoint.position;
                 projectile.transform.rotation = firePoint.rotation;
@@ -97,6 +98,20 @@ namespace _Game.CombatSystem
             }
         }
         
+        
+
+        public void AddExtraProjectileBehavior(ProjectileBehavior behavior)
+        {
+            if (!extraProjectileBehaviors.Contains(behavior))
+                extraProjectileBehaviors.Add(behavior);
+        }
+        
+        public void RemoveProjectileBehavior(ProjectileBehavior behavior)
+        {
+            if (extraProjectileBehaviors.Contains(behavior))
+                extraProjectileBehaviors.Remove(behavior);
+        }
+        
         private void AddToActiveProjectiles(Projectile projectile)
         {
             _activeProjectiles.Add(projectile);
@@ -106,13 +121,6 @@ namespace _Game.CombatSystem
         {
             _activeProjectiles.Remove(projectile);
         }
-
-        public void AddExtraBehavior(ProjectileBehavior behavior)
-        {
-            if (!extraBehaviors.Contains(behavior))
-                extraBehaviors.Add(behavior);
-        }
-        
         private void ClearActiveProjectiles()
         {
             List<Projectile> toRemove = new List<Projectile>();
