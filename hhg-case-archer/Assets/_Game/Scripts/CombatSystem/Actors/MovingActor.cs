@@ -16,7 +16,6 @@ namespace _Game.CombatSystem
             base.Initialize(character);
             _navMeshAgent = GetComponent<NavMeshAgent>();
             _navMeshAgent.speed = character.StatController.GetStatValue(StatType.MovementSpeed);
-            Debug.Log("navmesh speed: " + _navMeshAgent.speed);
         }
         
         public void Move(Vector2 direction)

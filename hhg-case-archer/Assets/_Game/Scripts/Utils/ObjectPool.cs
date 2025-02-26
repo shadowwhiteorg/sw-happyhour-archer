@@ -26,7 +26,7 @@ namespace _Game.Utils
         {
             for (int i = 0; i < amount; i++)
             {
-                T obj = Object.Instantiate(_prefab, _parent);
+                T obj = Object.Instantiate(_prefab,_parent);
                 obj.gameObject.SetActive(false);
                 _pool.Enqueue(obj);
                 _currentSize++;

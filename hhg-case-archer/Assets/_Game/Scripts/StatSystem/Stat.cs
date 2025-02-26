@@ -26,13 +26,11 @@ namespace _Game.StatSystem
                 else if (mod.Type == ModifierType.Percentage)
                     percentMultiplier += mod.Value / 100f;
             }
-            Debug.Log("Final value: " + finalValue * percentMultiplier + " Percent multiplier " + percentMultiplier);
             return finalValue * percentMultiplier;
         }
     
         public void AddModifier(StatModifier modifier)
         {
-            Debug.Log("Added modifier: " + modifier.Value);
             _modifiers.Add(modifier);
         }
     

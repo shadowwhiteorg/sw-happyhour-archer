@@ -1,5 +1,6 @@
 ﻿using System;
 using _Game.CombatSystem;
+using _Game.Interfaces;
 using UnityEngine;
 
 namespace _Game.Managers
@@ -10,6 +11,7 @@ namespace _Game.Managers
         public static event Action<BaseCharacter> OnMoveEnd;
         public static event Action OnSearchEnemies;
         public static event Action OnEnemyDeath;
+        public static event Action<IDamageable> OnTargetDeath;
         
         public static void FireOnMoveStart(BaseCharacter character)
         {
@@ -29,6 +31,11 @@ namespace _Game.Managers
         public static void FireOnEnemyDeath()
         {
             OnEnemyDeath?.Invoke();
+        }
+        
+        public static void FireOnTargetDeath(IDamageable target)
+        {
+            OnTargetDeath?.Invoke(target);
         }
         
     }

@@ -4,6 +4,6 @@ namespace _Game.CombatSystem
 {
     public abstract class AttackBehavior : ScriptableObject
     {
-        public abstract void ExecuteAttack(BaseWeapon weapon, Vector3 targetPosition);
+        public abstract void ExecuteAttack(Weapon weapon, Vector3 targetPosition);
     }
 }

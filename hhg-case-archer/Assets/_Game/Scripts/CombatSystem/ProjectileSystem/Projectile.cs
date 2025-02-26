@@ -1,28 +1,31 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using _Game.Interfaces;
-using _Game.SkillSystem;
-using _Game.Utils;
 using UnityEngine;
+using _Game.Interfaces;
+using _Game.Managers;
+using _Game.Utils;
+using Unity.VisualScripting;
 
 namespace _Game.CombatSystem
 {
     public class Projectile : MonoBehaviour
     {
-        [SerializeField] private bool usingUnityPhysics = false;
+        
         [SerializeField] private Rigidbody rigidbody;
         private ObjectPool<Projectile> _pool;
-        private BaseWeapon _weapon;
+        private Weapon _weapon;
         private IDamageable _target;
         private float _shootingSpeed;
         private float _damage;
         private float _time;
+        private int _ricochetCount;
+        private bool _usingUnityPhysics;
         private Vector3 _targetPosition;
         private Vector3 _startPosition;
         private List<ProjectileBehavior> _behaviors = new List<ProjectileBehavior>();
+        private List<EnemyCharacter> _targetedEnemies = new List<EnemyCharacter>();
 
-        public void Initialize(BaseWeapon weapon, List<ProjectileBehavior> behaviors, ObjectPool<Projectile> sourcePool)
+        public void Initialize(Weapon weapon, List<ProjectileBehavior> behaviors, ObjectPool<Projectile> sourcePool)
         {
             _weapon = weapon;
             _shootingSpeed = weapon.ShootingSpeed;
@@ -32,13 +35,15 @@ namespace _Game.CombatSystem
             _behaviors.Clear();
             _behaviors.AddRange(behaviors);
             _pool = sourcePool;
+            EventManager.OnTargetDeath += OnTargetDeath;
         }
         
 
-        public void Launch()
+        public void Launch(float ricochetCount, bool usingUnityPhysics)
         {
-            Debug.Log("Projectile launched");
-            if (usingUnityPhysics)
+            _ricochetCount = (int)ricochetCount;
+            _usingUnityPhysics = usingUnityPhysics;
+            if (_usingUnityPhysics)
             {
                 UnityPhysicsLaunch(_weapon.FirePoint.position, _targetPosition);
             }
@@ -105,7 +110,8 @@ namespace _Game.CombatSystem
                 Debug.LogError("Not enough speed to reach the target!");
                 return;
             }
-            StartCoroutine(MoveUntilReachTargetAndThenSetPositionToTarget(velocity, _targetPosition, _target));
+            if(this.gameObject.activeSelf)
+                StartCoroutine(KinematicMovementCoroutine(velocity, _targetPosition, _target));
         }
         
         private bool CalculateLaunchVelocity(out Vector3 velocity)
@@ -134,19 +140,12 @@ namespace _Game.CombatSystem
             float vy = _shootingSpeed * Mathf.Sin(theta);
         
             velocity = new Vector3(toTarget.x / horizontalDistance * vx, vy, toTarget.z / horizontalDistance * vx);
+            Debug.Log($"Velocity: {velocity}");
             return true;
         }
         
 
-        // private void OnTriggerEnter(Collider other)
-        // {
-        //     if (other.TryGetComponent<IDamageable>(out var damageable))
-        //     {
-        //         OnHit(damageable);
-        //     }
-        // }
-
-        IEnumerator MoveUntilReachTargetAndThenSetPositionToTarget(Vector3 velocity, Vector3 target, IDamageable targetDamageable)
+        IEnumerator KinematicMovementCoroutine(Vector3 velocity, Vector3 target, IDamageable targetDamageable)
         {
             while (Vector3.Distance(transform.position, target) > 1f)
             {
@@ -158,26 +157,51 @@ namespace _Game.CombatSystem
                 yield return null;
             }
             transform.position = target;
-            targetDamageable.TakeDamage(_damage);
-            ReturnToPool();
+            HitTarget(targetDamageable);
         }
-
-        // private void OnHit(IDamageable target)
-        // {
-        //     if(Vector3.Distance(transform.position, target.GetPosition()) > 0.1f) return;
-        //     target.TakeDamage(_damage);
-        //     foreach (var behavior in _behaviors)
-        //     {
-        //         behavior.ApplyEffect(this, target);
-        //     }
-        //     ReturnToPool();
-        // }
+        
+        private void HitTarget(IDamageable target)
+        {
+            _targetedEnemies.Add((EnemyCharacter)target);
+            foreach (var behavior in _behaviors)
+            {
+                behavior.ApplyEffect(target);
+            }
+            
+            if (_ricochetCount > 0)
+            {
+                _ricochetCount--;
+                var mOldTarget = _target;
+                _shootingSpeed = _shootingSpeed = _weapon.ShootingSpeed;
+                _target = CombatManager.Instance.FindNearestEnemy(transform.position, 50,(EnemyCharacter)target,_targetedEnemies);
+                _targetPosition = _target.GetPosition();
+                if(_usingUnityPhysics)
+                    UnityPhysicsLaunch(transform.position+Vector3.up*0.1f, _targetPosition);
+                else
+                    KinematicLaunch(transform.position + Vector3.up*0.1f, _targetPosition);
+                mOldTarget.TakeDamage(_damage);
+            }
+            else
+            {
+                target.TakeDamage(_damage);
+                ReturnToPool();
+            }
+        }
+        
 
         public void ReturnToPool()
         {
+            EventManager.OnTargetDeath -= OnTargetDeath;
             StopAllCoroutines();
-            _weapon.RemoveFromActiveProjectiles(this);
             _pool.Return(this);
+        }
+        
+        private void OnTargetDeath(IDamageable target)
+        {
+            if (target == _target)
+            {
+                ReturnToPool();
+            }
         }
     }
 }

@@ -10,16 +10,16 @@ using UnityEngine.Serialization;
 
 namespace _Game.CombatSystem
 {
-    public class BaseWeapon : MonoBehaviour
+    public class Weapon : MonoBehaviour
     {
+        [SerializeField] private bool usingUnityPhysics = false;
         [SerializeField] private Transform firePoint;
         [SerializeField] private List<ProjectileData> allProjectiles;
-        [FormerlySerializedAs("extraBehaviors")] [SerializeField] private List<ProjectileBehavior> extraProjectileBehaviors;
+        [SerializeField] private List<ProjectileBehavior> extraProjectileBehaviors;
         [SerializeField] private WeaponData weaponData;
         [SerializeField] private ProjectileData defaultProjectile;
         
         public float ShootingSpeed => weaponData.ShootingSpeed;
-        private List<Projectile> _activeProjectiles = new List<Projectile>();
         public float AttackRate => weaponData.AttackRate;
         public Transform FirePoint => firePoint;
         private BaseCharacter _owner;
@@ -43,13 +43,13 @@ namespace _Game.CombatSystem
 
         private void OnEnable()
         {
-            EventManager.OnEnemyDeath += ClearActiveProjectiles;
+            // EventManager.OnEnemyDeath += ClearActiveProjectiles;
             EventManager.OnEnemyDeath += SetCurrentTarget;
         }
 
         private void OnDisable()
         {
-            EventManager.OnEnemyDeath -= ClearActiveProjectiles;
+            // EventManager.OnEnemyDeath -= ClearActiveProjectiles;
             EventManager.OnEnemyDeath -= SetCurrentTarget;
         }
 
@@ -66,7 +66,7 @@ namespace _Game.CombatSystem
 
         public void SetCurrentTarget()
         {
-            _currentTarget = CombatManager.Instance.FindNearestEnemy(transform.position, 20);
+            _currentTarget = CombatManager.Instance.FindNearestEnemy(transform.position, 50);
         }
 
         public void Attack()
@@ -74,17 +74,17 @@ namespace _Game.CombatSystem
             if (_activeProjectileData == null)
                 _activeProjectileData = defaultProjectile;
 
-            List<ProjectileBehavior> projectileBehaviors = new List<ProjectileBehavior>(_activeProjectileData.DefaultBehaviors);
+            List<ProjectileBehavior> projectileBehaviors = new List<ProjectileBehavior>();
+            projectileBehaviors.AddRange(_activeProjectileData.DefaultBehaviors);
             projectileBehaviors.AddRange(extraProjectileBehaviors);
 
             if (_pools.TryGetValue(_activeProjectileData.Type, out var pool))
             {
                 Projectile projectile = pool.Get();
                 projectile.Initialize(this, projectileBehaviors, pool);
-                AddToActiveProjectiles(projectile);
                 projectile.transform.position = firePoint.position;
                 projectile.transform.rotation = firePoint.rotation;
-                projectile.Launch();
+                projectile.Launch(_owner.StatController.GetStatValue(StatType.RicochetCount),usingUnityPhysics);
             }
         }
 
@@ -94,7 +94,6 @@ namespace _Game.CombatSystem
             if (newProjectile != null)
             {
                 _activeProjectileData = newProjectile;
-                Debug.Log($"Weapon switched to: {newType}");
             }
         }
         
@@ -110,25 +109,6 @@ namespace _Game.CombatSystem
         {
             if (extraProjectileBehaviors.Contains(behavior))
                 extraProjectileBehaviors.Remove(behavior);
-        }
-        
-        private void AddToActiveProjectiles(Projectile projectile)
-        {
-            _activeProjectiles.Add(projectile);
-        }
-        
-        public void RemoveFromActiveProjectiles(Projectile projectile)
-        {
-            _activeProjectiles.Remove(projectile);
-        }
-        private void ClearActiveProjectiles()
-        {
-            List<Projectile> toRemove = new List<Projectile>();
-            toRemove.AddRange(_activeProjectiles);
-            foreach (var projectile in toRemove)
-            {
-                projectile?.ReturnToPool();
-            }
         }
     }
 }

@@ -8,5 +8,7 @@ namespace _Game.Enums
         AttackDamage = 2,
         MovementSpeed = 3,
         AttackSpeed = 4,
+        AttackCount = 5,
+        RicochetCount = 6
     }
 }

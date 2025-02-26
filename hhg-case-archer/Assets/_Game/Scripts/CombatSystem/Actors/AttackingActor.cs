@@ -6,11 +6,12 @@ namespace _Game.CombatSystem
     
     public class AttackingActor : ActorComponent
     {
-        [SerializeField] private BaseWeapon weapon;
-        public BaseWeapon Weapon => weapon;
+        [SerializeField] private Weapon weapon;
+        public Weapon Weapon => weapon;
         public override void Initialize(BaseCharacter character)
         {
             base.Initialize();
+            weapon.Initialize(character);
         }
         
         public void Attack()

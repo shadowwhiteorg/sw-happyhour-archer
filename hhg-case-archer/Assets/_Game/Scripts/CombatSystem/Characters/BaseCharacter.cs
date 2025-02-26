@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using _Game.Enums;
 using _Game.Interfaces;
+using _Game.Managers;
 using _Game.SkillSystem;
 using _Game.StatSystem;
 using UnityEngine;
@@ -58,7 +58,7 @@ namespace _Game.CombatSystem
 
         protected virtual void Die()
         {
-            
+            EventManager.FireOnTargetDeath(this);
         }
         
         public void LearnSkill(BaseSkill skill)

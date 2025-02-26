@@ -67,10 +67,10 @@ namespace _Game.Managers
             }
         }
 
-        public IDamageable FindNearestEnemy(Vector3 position, float searchRadius)
+        public IDamageable FindNearestEnemy(Vector3 position, float searchRadius, EnemyCharacter exclude = null, List<EnemyCharacter> excludeList = null)
         {
             EventManager.FireOnEnemySearch();
-            return _enemyQuadTree.FindNearest(position, searchRadius);
+            return _enemyQuadTree.FindNearest(position, searchRadius,exclude, excludeList);
         }
 
         private void SpawnNewEnemy()

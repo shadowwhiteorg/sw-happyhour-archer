@@ -1,7 +1,7 @@
 ﻿using _Game.CombatSystem;
 using UnityEngine;
 
-namespace _Game.SkillSystem.ProjectileSkills
+namespace _Game.SkillSystem
 {
     [CreateAssetMenu(fileName = "ProjectileSkillEffect", menuName = "SkillSystem/ Projectile Skill Effect", order = 0)]
     public class ProjectileSkillEffect : SkillEffectData

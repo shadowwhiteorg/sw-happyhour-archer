@@ -10,9 +10,8 @@ namespace _Game.CombatSystem
         public GameObject ProjectilePrefab;
         public List<ProjectileBehavior> ProjectileBehaviors;
         
-        public override void ExecuteAttack(BaseWeapon weapon, Vector3 target)
+        public override void ExecuteAttack(Weapon weapon, Vector3 target)
         {
-            
             // TODO: Apply after stat system is implemented
             // CharacterStats stats = weapon.Owner.GetComponent<CharacterStats>(); // Get the character's stats
             //
