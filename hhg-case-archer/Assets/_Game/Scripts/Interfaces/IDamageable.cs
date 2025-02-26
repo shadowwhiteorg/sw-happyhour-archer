@@ -1,4 +1,5 @@
-﻿using _Game.GameMechanics;
+﻿using _Game.CombatSystem;
+using _Game.SkillSystem;
 using UnityEngine;
 
 namespace _Game.Interfaces

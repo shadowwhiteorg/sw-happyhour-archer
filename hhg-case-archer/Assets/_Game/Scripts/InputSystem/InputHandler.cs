@@ -1,6 +1,6 @@
 ﻿using System;
-using _Game.Core;
-using _Game.GameMechanics;
+using _Game.Managers;
+using _Game.CombatSystem;
 using _Game.Utils;
 using UnityEngine;
 
