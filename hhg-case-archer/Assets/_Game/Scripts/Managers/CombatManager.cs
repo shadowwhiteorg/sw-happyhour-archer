@@ -18,7 +18,7 @@ namespace _Game.Managers
         private QuadTree<EnemyCharacter> _enemyQuadTree;
         private List<EnemyCharacter> _enemies = new List<EnemyCharacter>();
 
-        private void Start()
+        public void InitializeCombat()
         {
             _enemyQuadTree = new QuadTree<EnemyCharacter>(new Rect(-50,-50,100,100), 4);
             SpawnEnemies();

@@ -33,7 +33,8 @@ namespace _Game.CombatSystem
             Debug.Log("attackSpeed = "+_shootingSpeed);
             _damage = weapon.ActiveProjectileData.Damage;
             _target = weapon.CurrentTarget;
-            _targetPosition = weapon.CurrentTarget.GetPosition();
+            if(weapon.CurrentTarget!=null)
+                _targetPosition = weapon.CurrentTarget.GetPosition();
             _behaviors.Clear();
             _behaviors.AddRange(behaviors);
             _pool = sourcePool;

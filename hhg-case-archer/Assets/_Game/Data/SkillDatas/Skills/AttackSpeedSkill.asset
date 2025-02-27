@@ -17,6 +17,6 @@ MonoBehaviour:
   skillType: 3
   cooldown: 0
   cost: 0
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 3c5dc8181b165d64782f7f76c0c28200, type: 3}
   skillEffects:
   - {fileID: 11400000, guid: 8379b4b120dfd11499b83f83929e3f3c, type: 2}
