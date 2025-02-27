@@ -59,7 +59,7 @@ namespace _Game.CombatSystem
             {
                 if (!_pools.ContainsKey(projectileData.Type))
                 {
-                    _pools[projectileData.Type] = new ObjectPool<Projectile>(projectileData.Prefab.GetComponent<Projectile>(), 10,this.transform);
+                    _pools[projectileData.Type] = new ObjectPool<Projectile>(projectileData.Prefab.GetComponent<Projectile>(), 10,null);
                 }
             }
         }

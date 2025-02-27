@@ -1,4 +1,5 @@
-﻿using _Game.Interfaces;
+﻿using _Game.Enums;
+using _Game.Interfaces;
 using UnityEngine;
 
 namespace _Game.CombatSystem
@@ -7,7 +8,10 @@ namespace _Game.CombatSystem
     {
         public void EnterState(BaseCharacter character)
         {
+            character.CharacterState = CharacterState.Moving;
+            character.CharacterModel.PlayWalkAnimation();
             character.MovingActor?.Initialize(character);
+            Debug.Log("Player walk animation");
         }
 
         public void UpdateState(BaseCharacter character)

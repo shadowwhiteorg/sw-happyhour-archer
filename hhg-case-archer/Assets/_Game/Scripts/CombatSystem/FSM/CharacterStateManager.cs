@@ -18,14 +18,18 @@ namespace _Game.CombatSystem
 
         private void OnEnable()
         {
-            EventManager.OnMoveStart += _ => SetState(new MovingState());
-            EventManager.OnMoveEnd += _ => SetState(new AttackingState());
+            if(_character.MovingActor)
+                EventManager.OnMoveStart += _ => SetState(new MovingState());
+            if(_character.AttackingActor)
+                EventManager.OnMoveEnd += _ => SetState(new AttackingState());
         }
         
         private void OnDisable()
         {
-            EventManager.OnMoveStart -= _ => SetState(new MovingState());
-            EventManager.OnMoveEnd -= _ => SetState(new AttackingState());
+            if(_character.MovingActor)
+                EventManager.OnMoveStart -= _ => SetState(new MovingState());
+            if(_character.AttackingActor)
+                EventManager.OnMoveEnd -= _ => SetState(new AttackingState());
         }
         
 

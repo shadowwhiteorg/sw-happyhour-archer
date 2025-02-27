@@ -149,6 +149,7 @@ MonoBehaviour:
   statConfig: {fileID: 11400000, guid: 287f86c05318c5142a946a0373dc1239, type: 2}
   initialSkills: []
   activeSkills: []
+  characterModel: {fileID: 9076998925823950680}
   CharacterState: 0
 --- !u!1 &9008965947331827826
 GameObject:
@@ -418,13 +419,40 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5535647646396653931, guid: 1dacc378b7a85e64696e56ce8d0ce8a7, type: 3}
       propertyPath: m_Name
-      value: P02
+      value: DummyModel
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5535647646396653931, guid: 1dacc378b7a85e64696e56ce8d0ce8a7, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9076998925823950680}
   m_SourcePrefab: {fileID: 100100000, guid: 1dacc378b7a85e64696e56ce8d0ce8a7, type: 3}
+--- !u!1 &8597023105384030344 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5535647646396653931, guid: 1dacc378b7a85e64696e56ce8d0ce8a7, type: 3}
+  m_PrefabInstance: {fileID: 4295396945990418915}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &9076998925823950680
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8597023105384030344}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53341f6e411e49d8bf5ca34e85ce13a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 8903523170542345457}
+  characterModel: {fileID: 8597023105384030344}
+--- !u!95 &8903523170542345457 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 4617311004935347474, guid: 1dacc378b7a85e64696e56ce8d0ce8a7, type: 3}
+  m_PrefabInstance: {fileID: 4295396945990418915}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8936569220734253618 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5159228069126568913, guid: 1dacc378b7a85e64696e56ce8d0ce8a7, type: 3}

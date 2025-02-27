@@ -1,5 +1,6 @@
 ﻿using _Game.Enums;
 using _Game.Interfaces;
+using Unity.Cinemachine;
 
 namespace _Game.CombatSystem
 {
@@ -10,6 +11,7 @@ namespace _Game.CombatSystem
             character.AttackingActor?.Initialize(character);
             character.CharacterState = CharacterState.Attacking;
             character.AttackingActor?.StartAttack();
+            
         }
 
         public void UpdateState(BaseCharacter character)

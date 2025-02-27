@@ -9,6 +9,7 @@ namespace _Game.CombatSystem
     {
         public bool IsMoving => _navMeshAgent.velocity.sqrMagnitude>  0.1f;
         private NavMeshAgent _navMeshAgent;
+        public NavMeshAgent NavMeshAgent => _navMeshAgent;
         public float movementSpeed => _character.StatController.GetStatValue(StatType.MovementSpeed);
 
         public override void Initialize(BaseCharacter character)
@@ -21,9 +22,6 @@ namespace _Game.CombatSystem
         public void Move(Vector2 direction)
         {
             _navMeshAgent.SetDestination(_navMeshAgent.transform.position + new Vector3(direction.x, 0, direction.y));
-            
-            // _navMeshAgent.Move(new Vector3(direction.x, 0, direction.y) * (Time.deltaTime * speed));
-            // _navMeshAgent.transform.LookAt(_navMeshAgent.transform.position + new Vector3(direction.x, 0, direction.y));
         }
 
         public void Stop()

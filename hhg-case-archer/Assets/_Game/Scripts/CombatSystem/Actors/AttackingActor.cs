@@ -9,10 +9,12 @@ namespace _Game.CombatSystem
     public class AttackingActor : ActorComponent
     {
         [SerializeField] private Weapon weapon;
+        private BaseCharacter _character;
         public Weapon Weapon => weapon;
         public override void Initialize(BaseCharacter character)
         {
             base.Initialize();
+            _character = character;
             weapon.Initialize(character);
         }
         
@@ -24,7 +26,33 @@ namespace _Game.CombatSystem
         public void StartAttack()
         {
             weapon.SetCurrentTarget();
+            _character.MovingActor.NavMeshAgent.updateRotation = false;
+            _character.transform.LookAt(weapon.CurrentTarget.GetPosition());
+            _character.MovingActor.NavMeshAgent.updateRotation = true;
             StartCoroutine(RepeatedAttack());
+            //StartCoroutine(RotateTowardsTarget(weapon.CurrentTarget.GetPosition()));
+        }
+        
+        private IEnumerator RotateTowardsTarget(Vector3 targetPosition)
+        {
+            _character.MovingActor.NavMeshAgent.updateRotation = false;
+            while (true)
+            {
+                if (targetPosition == _character.transform.position) yield break;
+
+                Vector3 direction = (targetPosition - _character.transform.position).normalized;
+                Quaternion targetRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z)); // Ignore Y-axis
+
+                _character.transform.rotation = Quaternion.Slerp(
+                    _character.transform.rotation,
+                    targetRotation,
+                    Time.deltaTime * 120f
+                );
+                _character.MovingActor.NavMeshAgent.updateRotation = true;
+                StartCoroutine(RepeatedAttack());
+                yield return null;
+                
+            }
         }
         
         public void Stop()
@@ -41,7 +69,7 @@ namespace _Game.CombatSystem
                     Attack();
                     yield return new WaitForSeconds(0.2f);
                 }
-                
+                _character.CharacterModel.PlayAttackAnimation();
                 yield return new WaitForSeconds(1/(_character.StatController.GetStatValue(StatType.AttackSpeed).Map(10, 30, 1, 4)));
             }
         }
