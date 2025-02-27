@@ -1,6 +1,6 @@
 ﻿using _Game.Enums;
 
-namespace _Game.StatSystem
+namespace _Game.DataStructures
 {
     public class StatModifier
     {

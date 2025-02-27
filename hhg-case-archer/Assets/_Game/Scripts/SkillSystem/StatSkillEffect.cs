@@ -1,4 +1,5 @@
 ﻿using _Game.CombatSystem;
+using _Game.DataStructures;
 using _Game.Enums;
 using _Game.StatSystem;
 using UnityEngine;

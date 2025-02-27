@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using _Game.Enums;
 using UnityEngine;
 using _Game.Interfaces;
 using _Game.Managers;
@@ -28,7 +29,8 @@ namespace _Game.CombatSystem
         public void Initialize(Weapon weapon, List<ProjectileBehavior> behaviors, ObjectPool<Projectile> sourcePool)
         {
             _weapon = weapon;
-            _shootingSpeed = weapon.ShootingSpeed;
+            _shootingSpeed = weapon.Owner.StatController.GetStatValue(StatType.AttackSpeed);
+            Debug.Log("attackSpeed = "+_shootingSpeed);
             _damage = weapon.ActiveProjectileData.Damage;
             _target = weapon.CurrentTarget;
             _targetPosition = weapon.CurrentTarget.GetPosition();
@@ -121,28 +123,36 @@ namespace _Game.CombatSystem
             float horizontalDistance = new Vector3(toTarget.x, 0, toTarget.z).magnitude;
             float heightDifference = _targetPosition.y - _startPosition.y;
             float gravity = Mathf.Abs(Physics.gravity.y);
-        
+
+            // If speed is too low, adjust it to the minimum required speed
             float minSpeedRequired = Mathf.Sqrt(gravity * horizontalDistance * horizontalDistance / (2 * heightDifference));
             if (_shootingSpeed < minSpeedRequired)
             {
                 _shootingSpeed = minSpeedRequired;
             }
-        
+
+            // Solve for the required angle
             float termInsideSqrt = (_shootingSpeed * _shootingSpeed * _shootingSpeed * _shootingSpeed) -
                                    gravity * (gravity * horizontalDistance * horizontalDistance + 2 * heightDifference * _shootingSpeed * _shootingSpeed);
-        
+
             if (termInsideSqrt < 0)
-                return false;
-        
-            float theta = Mathf.Atan((_shootingSpeed * _shootingSpeed + Mathf.Sqrt(termInsideSqrt)) / (gravity * horizontalDistance));
-        
+                return false; // No valid solution for given speed
+
+            float thetaLow = Mathf.Atan((_shootingSpeed * _shootingSpeed - Mathf.Sqrt(termInsideSqrt)) / (gravity * horizontalDistance));
+            float thetaHigh = Mathf.Atan((_shootingSpeed * _shootingSpeed + Mathf.Sqrt(termInsideSqrt)) / (gravity * horizontalDistance));
+
+            // Choose the lower angle for a more natural feel
+            float theta = Mathf.Min(thetaLow, thetaHigh);
+
+            // Convert to velocity components
             float vx = _shootingSpeed * Mathf.Cos(theta);
             float vy = _shootingSpeed * Mathf.Sin(theta);
-        
+
             velocity = new Vector3(toTarget.x / horizontalDistance * vx, vy, toTarget.z / horizontalDistance * vx);
-            Debug.Log($"Velocity: {velocity}");
             return true;
         }
+        
+
         
 
         IEnumerator KinematicMovementCoroutine(Vector3 velocity, Vector3 target, IDamageable targetDamageable)

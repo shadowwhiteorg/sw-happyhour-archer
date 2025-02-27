@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using _Game.Enums;
+using _Game.Utils;
 using UnityEngine;
 
 namespace _Game.CombatSystem
@@ -41,7 +42,7 @@ namespace _Game.CombatSystem
                     yield return new WaitForSeconds(0.2f);
                 }
                 
-                yield return new WaitForSeconds(_character.AttackingActor.weapon.AttackRate);
+                yield return new WaitForSeconds(1/(_character.StatController.GetStatValue(StatType.AttackSpeed).FloatMap(10, 30, 1, 4)));
             }
         }
         

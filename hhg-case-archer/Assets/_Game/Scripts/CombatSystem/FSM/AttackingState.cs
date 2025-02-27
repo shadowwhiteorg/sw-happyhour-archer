@@ -19,7 +19,7 @@ namespace _Game.CombatSystem
 
         public void ExitState(BaseCharacter character)
         {
-            character.AttackingActor?.Stop();
+            character?.AttackingActor?.Stop();
         }
     }
 }

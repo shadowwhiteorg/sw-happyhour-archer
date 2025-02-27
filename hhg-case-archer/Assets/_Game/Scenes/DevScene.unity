@@ -1335,7 +1335,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 9044918585310842826, guid: b988fccd46058ee4f9f245da6541b529, type: 3}
-  enemyCount: 5
+  enemyCount: 10
   spawnRadius: 20
   spawnCenter: {fileID: 1684936894}
 --- !u!1 &2046615647
@@ -1507,7 +1507,7 @@ PrefabInstance:
     - target: {fileID: 7006120306534885907, guid: 3b7ade15c3fd45a46b4cbf7b3454a560, type: 3}
       propertyPath: 'initialSkills.Array.data[0]'
       value: 
-      objectReference: {fileID: 11400000, guid: f513eea4487b22b4b9ac58210f8f1237, type: 2}
+      objectReference: {fileID: 11400000, guid: 65a0e29560df18747bd2558d600b38c7, type: 2}
     - target: {fileID: 7006120306534885907, guid: 3b7ade15c3fd45a46b4cbf7b3454a560, type: 3}
       propertyPath: 'initialSkills.Array.data[1]'
       value: 

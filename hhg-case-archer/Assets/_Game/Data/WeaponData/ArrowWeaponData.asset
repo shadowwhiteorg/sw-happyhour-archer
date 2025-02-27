@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WeaponID: ARROW
   AttackRate: 2
-  ShootingSpeed: 15
+  ShootingSpeed: 30
   HasAngularAttack: 0
   AttackCount: 0
   MuzzleParticle: {fileID: 0}

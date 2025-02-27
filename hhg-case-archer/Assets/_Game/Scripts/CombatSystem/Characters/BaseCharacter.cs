@@ -80,6 +80,7 @@ namespace _Game.CombatSystem
             _currentHealth -= damage;
             if (_currentHealth <= 0)
             {
+                StopAllCoroutines();
                 Die();
             }
         }
