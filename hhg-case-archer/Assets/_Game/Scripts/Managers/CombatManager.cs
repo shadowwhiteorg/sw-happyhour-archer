@@ -29,6 +29,7 @@ namespace _Game.Managers
             for (int i = 0; i < enemyCount; i++)
             {
                 var enemy = Instantiate(enemyPrefab, spawnCenter.transform.position + new Vector3(Random.insideUnitSphere.x, 0, Random.insideUnitSphere.z) * spawnRadius, Quaternion.identity);
+                enemy.transform.LookAt(GameManager.Instance.PlayerCharacter.transform);
                 AddEnemy(enemy);
             }
         }
