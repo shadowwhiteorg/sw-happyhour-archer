@@ -4,16 +4,10 @@ namespace _Game.Utils
 {
     public static class ExtensionMethods
     {
-        public static float FloatMap(this float attackSpeed, float minSpeed, float maxSpeed, float minFireRate, float maxFireRate)
+        public static float Map(this float f, float inMin, float inMax, float outMin, float outMax)
         {
-            float t = Mathf.Clamp01((attackSpeed - minSpeed) / (maxSpeed - minSpeed));
-            return Mathf.Lerp(maxFireRate, minFireRate, t);
+            float t = Mathf.Clamp01((f - inMin) / (inMax - inMin));
+            return Mathf.Lerp(outMax, outMin, t);
         }
-        // public static float FloatMap(this float attackSpeed, float minSpeed, float maxSpeed, float minFireRate, float maxFireRate)
-        // {
-        //     float t = Mathf.Clamp01((attackSpeed - minSpeed) / (maxSpeed - minSpeed));
-        //     float fireRate = Mathf.Lerp(maxFireRate, minFireRate, t);
-        //     return 1f / fireRate;  // Convert fire rate to shot delay
-        // }
     }
 }
