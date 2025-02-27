@@ -95,6 +95,7 @@ namespace _Game.CombatSystem
         protected virtual void Die()
         {
             characterModel.PlayDeathAnimation();
+            StartCoroutine(DisableAfterDie());
             EventManager.FireOnTargetDeath(this);
         }
         
@@ -108,6 +109,17 @@ namespace _Game.CombatSystem
         {
             skill.RemoveSkill(this);
             activeSkills.Remove(skill);
+        }
+        
+        private IEnumerator DisableAfterDie()
+        {
+            yield return new WaitForSeconds(1f);
+            while(transform.position.y > -10)
+            {
+                transform.position -= Vector3.up * Time.deltaTime;
+                yield return null;
+            }
+            Destroy(gameObject);
         }
         
     }
