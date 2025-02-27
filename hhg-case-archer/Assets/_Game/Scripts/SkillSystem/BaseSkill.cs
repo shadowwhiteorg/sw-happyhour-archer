@@ -17,9 +17,11 @@ namespace _Game.SkillSystem
         [SerializeField] private List<SkillEffectData> skillEffects;
         
         public string SkillName => skillName;
+        public string Description => description;
         public float Cooldown => cooldown;
         public float Cost => cost;
         public SkillType SkillType => skillType;
+        public Sprite Icon => icon;
 
         public void ApplySkill(BaseCharacter character)
         {

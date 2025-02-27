@@ -36,9 +36,18 @@ namespace _Game.InputSystem
         private void Update()
         {
             if (Input.GetMouseButtonDown(0))
-                EventManager.FireOnMoveStart(_player);
-            if(Input.GetMouseButtonUp(0))
-                EventManager.FireOnMoveEnd(_player);
+            {
+                // if input is on UI, return
+                if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) return;
+                    EventManager.FireOnMoveStart(_player);
+            }
+
+            if (Input.GetMouseButtonUp(0))
+            {
+                if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) return;
+                    EventManager.FireOnMoveEnd(_player);
+            }
+                
             if(Input.GetMouseButton(0))
                 HandleInput();
         }
