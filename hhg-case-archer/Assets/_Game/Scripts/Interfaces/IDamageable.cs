@@ -1,6 +1,5 @@
-﻿using _Game.CombatSystem;
+﻿using System.Collections.Generic;
 using _Game.Enums;
-using _Game.SkillSystem;
 using UnityEngine;
 
 namespace _Game.Interfaces
@@ -11,4 +10,5 @@ namespace _Game.Interfaces
         Vector3 GetPosition();
         void ApplyStatusEffect(StatusEffectType statusEffect, float effectDuration = 0, float effectValue = 0);
     }
+    
 }

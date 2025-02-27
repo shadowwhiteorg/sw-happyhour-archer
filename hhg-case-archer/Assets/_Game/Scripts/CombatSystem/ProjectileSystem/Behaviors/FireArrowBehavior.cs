@@ -9,11 +9,10 @@ namespace _Game.SkillSystem
     [CreateAssetMenu(fileName = "FireArrowBehavior", menuName = "CombatSystem/Projectile/ProjectileBehaviors/FireArrowBehavior", order = 0)]
     public class FireArrowBehavior : ProjectileBehavior
     {
-        [SerializeField] private float burnDamage;
-        public override void ApplyEffect(IDamageable target)
+        public override void ApplyEffect(IDamageable target, BaseCharacter sourceCharacter)
         {
-            target.ApplyStatusEffect(StatusEffectType.Fire,0,burnDamage);
-            // throw new System.NotImplementedException();
+            Debug.Log("Fire Arrow Behavior");
+            target.ApplyStatusEffect(StatusEffectType.Fire,sourceCharacter.StatController.GetStatValue(StatType.BurnDamageDuration),sourceCharacter.StatController.GetStatValue(StatType.BurnDamage));
         }
     }
 }

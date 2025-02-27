@@ -12,13 +12,13 @@ namespace _Game.SkillSystem
         public override void ApplyEffect(BaseCharacter character)
         {
             character.AttackingActor.Weapon.SetActiveProjectile(projectileBehavior.StatusEffectType);
-            character.AttackingActor.Weapon.AddExtraProjectileBehavior(projectileBehavior);
+            // character.AttackingActor.Weapon.AddExtraProjectileBehavior(projectileBehavior);
         }
 
         public override void RemoveEffect(BaseCharacter character)
         {
             character.AttackingActor.Weapon.SetActiveProjectile(StatusEffectType.Default);
-            character.AttackingActor.Weapon.RemoveProjectileBehavior(projectileBehavior);
+            // character.AttackingActor.Weapon.RemoveProjectileBehavior(projectileBehavior);
         }
     }
 }

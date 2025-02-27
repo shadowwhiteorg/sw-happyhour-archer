@@ -8,6 +8,6 @@ namespace _Game.CombatSystem
     {
         [SerializeField] private StatusEffectType statusEffectType;
         public StatusEffectType StatusEffectType => statusEffectType;
-        public abstract void ApplyEffect(IDamageable target);
+        public abstract void ApplyEffect(IDamageable target, BaseCharacter sourceCharacter);
     }
 }

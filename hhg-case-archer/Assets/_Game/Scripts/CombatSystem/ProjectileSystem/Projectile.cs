@@ -165,7 +165,7 @@ namespace _Game.CombatSystem
             _targetedEnemies.Add((EnemyCharacter)target);
             foreach (var behavior in _behaviors)
             {
-                behavior.ApplyEffect(target);
+                behavior.ApplyEffect(target, _weapon.Owner);
             }
             
             if (_ricochetCount > 0)

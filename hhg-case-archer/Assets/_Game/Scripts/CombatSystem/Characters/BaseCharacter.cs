@@ -3,6 +3,7 @@ using System.Collections;
 using _Game.Enums;
 using _Game.Interfaces;
 using _Game.Managers;
+using _Game.DataStructures;
 using _Game.SkillSystem;
 using _Game.StatSystem;
 using UnityEngine;
@@ -14,15 +15,15 @@ namespace _Game.CombatSystem
         [SerializeField] private StatConfig statConfig;
         [SerializeField] private List<BaseSkill> initialSkills;
         [SerializeField] private List<BaseSkill> activeSkills;
-        private float _baseHealth = 100;
-        private float _burnTimer;
-        public float Health => StatController.GetStatValue(StatType.Health);
-        
         public CharacterState CharacterState;
-
         public StatController StatController;
         public MovingActor MovingActor => GetComponent<MovingActor>();
         public AttackingActor AttackingActor => GetComponent<AttackingActor>();
+        private float _currentHealth;
+        public float CurrentHealth => _currentHealth;
+        public float BaseHealth { get; set; }
+        private Dictionary<StatusEffectType, StatusEffect> _activeEffects = new Dictionary<StatusEffectType, StatusEffect>();
+
 
         private void Start()
         {
@@ -32,58 +33,52 @@ namespace _Game.CombatSystem
         public void Initialize()
         {
             StatController = new StatController(statConfig);
-            _baseHealth = Health;
+            BaseHealth = StatController.GetStatValue(StatType.Health);
+            _currentHealth = BaseHealth;
             foreach (var skill in initialSkills)
             {
                 LearnSkill(skill);
             }
         }
-        
         public virtual Vector3 GetPosition()
         {
             return transform.position;
         }
-
-        public void ApplyStatusEffect(StatusEffectType statusEffect, float effectDuration, float effectValue)
+        
+        public void ApplyStatusEffect(StatusEffectType effectType, float effectDuration, float effectValue)
         {
-            switch (statusEffect)
+            if (_activeEffects.TryGetValue(effectType, out StatusEffect existingEffect))
             {
-                case StatusEffectType.Fire:
-                    Debug.Log("Burned");
-                    _burnTimer = 0;
-                    StartCoroutine(ExtendedTakeDamage());
-                    break;
+                // Extend duration if effect is already active
+                existingEffect.ExtendDuration(effectDuration);
             }
-            
+            else
+            {
+                // Create and start a new effect
+                StatusEffect newEffect = new StatusEffect(effectType, effectValue, effectDuration);
+                _activeEffects[effectType] = newEffect;
+                StartCoroutine(HandleStatusEffect(newEffect));
+            }
         }
         
-        private IEnumerator ExtendedTakeDamage()
+        private IEnumerator HandleStatusEffect(StatusEffect effect)
         {
-           
-            while(_burnTimer <= StatController.GetStatValue(StatType.BurnDamageDuration))
+            while (effect.Duration > 0)
             {
-                for (int i = 0; i < 100; i++)
-                {
-                    Debug.Log("Burning" + StatController.GetStatValue(StatType.BurnDamage));
-                    // TakeDamage(StatController.GetStatValue(StatType.BurnDamage));
-                    TakeDamage(12);
-                    yield return new WaitForSeconds(1f);
-                }
-                _burnTimer += Time.deltaTime;
+                TakeDamage(effect.DamagePerSecond);
+                yield return new WaitForSeconds(1f);
+                effect.Duration -= 1f;
             }
-            yield return null;
-        }
 
-        public float GetDamage()
-        {
-            return StatController.GetStatValue(StatType.AttackDamage);
+            // Remove expired effect
+            _activeEffects.Remove(effect.Type);
         }
 
         public void TakeDamage(float damage)
         {
             Debug.Log("Taking Damage "+damage);
-            _baseHealth -= damage;
-            if (_baseHealth <= 0)
+            _currentHealth -= damage;
+            if (_currentHealth <= 0)
             {
                 Die();
             }
