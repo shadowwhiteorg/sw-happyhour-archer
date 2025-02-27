@@ -10,7 +10,7 @@ namespace _Game.CombatSystem
             base.Die();
             CombatManager.Instance.RemoveEnemy(this);
             EventManager.FireOnEnemyDeath();
-            Destroy(gameObject);
+            // Destroy(gameObject);
         }
         
     }

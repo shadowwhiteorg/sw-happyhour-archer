@@ -94,7 +94,7 @@ namespace _Game.CombatSystem
 
         protected virtual void Die()
         {
-            // characterModel.PlayDeathAnimation();
+            characterModel.PlayDeathAnimation();
             EventManager.FireOnTargetDeath(this);
         }
         

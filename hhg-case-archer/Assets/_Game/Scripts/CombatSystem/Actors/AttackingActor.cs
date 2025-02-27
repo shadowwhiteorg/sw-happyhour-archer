@@ -70,7 +70,7 @@ namespace _Game.CombatSystem
                     yield return new WaitForSeconds(0.2f);
                 }
                 _character.CharacterModel.PlayAttackAnimation();
-                yield return new WaitForSeconds(1/(_character.StatController.GetStatValue(StatType.AttackSpeed).Map(10, 30, 1, 4)));
+                yield return new WaitForSeconds(1/(_character.StatController.GetStatValue(StatType.AttackSpeed).Map(0, 80, 1, 4)));
             }
         }
         

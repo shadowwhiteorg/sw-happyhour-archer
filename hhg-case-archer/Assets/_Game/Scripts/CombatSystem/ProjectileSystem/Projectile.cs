@@ -30,11 +30,9 @@ namespace _Game.CombatSystem
         {
             _weapon = weapon;
             _shootingSpeed = weapon.Owner.StatController.GetStatValue(StatType.AttackSpeed);
-            Debug.Log("attackSpeed = "+_shootingSpeed);
             _damage = weapon.ActiveProjectileData.Damage;
             _target = weapon.CurrentTarget;
-            if(weapon.CurrentTarget!=null)
-                _targetPosition = weapon.CurrentTarget.GetPosition();
+            _targetPosition = weapon.CurrentTarget.GetPosition();
             _behaviors.Clear();
             _behaviors.AddRange(behaviors);
             _pool = sourcePool;
@@ -187,9 +185,9 @@ namespace _Game.CombatSystem
                 _target = CombatManager.Instance.FindNearestEnemy(transform.position, 50,(EnemyCharacter)target,_targetedEnemies);
                 _targetPosition = _target.GetPosition();
                 if(_usingUnityPhysics)
-                    UnityPhysicsLaunch(transform.position+Vector3.up*1f, _targetPosition);
+                    UnityPhysicsLaunch(transform.position+Vector3.up*.1f, _targetPosition);
                 else
-                    KinematicLaunch(transform.position + Vector3.up*1f, _targetPosition);
+                    KinematicLaunch(transform.position + Vector3.up*.1f, _targetPosition);
                 mOldTarget.TakeDamage(_damage);
             }
             else
@@ -203,7 +201,7 @@ namespace _Game.CombatSystem
         public void ReturnToPool()
         {
             EventManager.OnTargetDeath -= OnTargetDeath;
-            StopAllCoroutines();
+            // StopAllCoroutines();
             _pool.Return(this);
         }
         
