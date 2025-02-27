@@ -32,7 +32,7 @@ namespace _Game.CombatSystem
             _shootingSpeed = weapon.Owner.StatController.GetStatValue(StatType.AttackSpeed);
             _damage = weapon.ActiveProjectileData.Damage;
             _target = weapon.CurrentTarget;
-            _targetPosition = weapon.CurrentTarget.GetPosition();
+            _targetPosition = weapon.CurrentTarget.GetPosition() + Vector3.up;
             _behaviors.Clear();
             _behaviors.AddRange(behaviors);
             _pool = sourcePool;
@@ -201,7 +201,7 @@ namespace _Game.CombatSystem
         public void ReturnToPool()
         {
             EventManager.OnTargetDeath -= OnTargetDeath;
-            // StopAllCoroutines();
+            StopAllCoroutines();
             _pool.Return(this);
         }
         
