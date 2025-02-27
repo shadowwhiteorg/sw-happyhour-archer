@@ -1,4 +1,5 @@
-﻿using _Game.GameMechanics;
+﻿using System.Collections.Generic;
+using _Game.Enums;
 using UnityEngine;
 
 namespace _Game.Interfaces
@@ -7,6 +8,7 @@ namespace _Game.Interfaces
     {
         void TakeDamage(float damage);
         Vector3 GetPosition();
-        void ApplyProjectileEffect(ProjectileBehavior projectileBehavior);
+        void ApplyStatusEffect(StatusEffectType statusEffect, float effectDuration = 0, float effectValue = 0);
     }
+    
 }

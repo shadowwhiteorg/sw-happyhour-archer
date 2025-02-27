@@ -12,3 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3139fe24564f45f891a2f41d38146aa5, type: 3}
   m_Name: FireArrowBehavior
   m_EditorClassIdentifier: 
+  statusEffectType: 1
+  burnDamage: 10

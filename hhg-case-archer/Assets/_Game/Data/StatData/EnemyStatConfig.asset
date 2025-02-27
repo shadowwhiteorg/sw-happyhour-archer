@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StatDataList:
   - Type: 1
-    BaseValue: 50
+    BaseValue: 100
   - Type: 2
     BaseValue: 20
   - Type: 3

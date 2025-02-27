@@ -71,13 +71,16 @@ namespace _Game.Utils
             _divided = true;
         }
     
-        public T FindNearest(Vector3 position, float searchRadius)
+        public T FindNearest(Vector3 position, float searchRadius, T exclude = default, List<T> excludeList = null)
         {
             float closestDist = searchRadius * searchRadius;
             T closestObject = default;
     
             foreach (var obj in _objects)
             {
+                // if(exclude != null && obj.Equals(exclude)) continue;
+                if(excludeList != null && excludeList.Contains(obj)) continue;
+                if(exclude != null && obj.Equals(exclude))continue;
                 float sqrDist = (obj.GetPosition() - position).sqrMagnitude;
                 if (sqrDist < closestDist)
                 {

@@ -13,9 +13,7 @@ MonoBehaviour:
   m_Name: FireArrowProjectileData
   m_EditorClassIdentifier: 
   Type: 1
-  Prefab: {fileID: 0}
-  Speed: 0
-  Damage: 0
+  Prefab: {fileID: 7039919253297751926, guid: 8a80f07b8152ca842849c5883205f28e, type: 3}
+  Damage: 10
   DefaultBehaviors:
-  - {fileID: 11400000, guid: 07022bc2fd7a715468797744ea4cc3d7, type: 2}
-  - {fileID: 11400000, guid: 3badb3bfd3b938240acf8da9e8dee432, type: 2}
+  - {fileID: 11400000, guid: 7f48e8d2eb98d734abee8310a40a60e9, type: 2}

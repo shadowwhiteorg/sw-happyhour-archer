@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using _Game.DataStructures;
 using _Game.Enums;
+using UnityEngine;
 
 namespace _Game.StatSystem
 {

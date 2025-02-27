@@ -1,4 +1,4 @@
-﻿using _Game.GameMechanics;
+﻿using _Game.CombatSystem;
 
 namespace _Game.Interfaces
 {

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using _Game.DataStructures;
 using _Game.Enums;
 
 namespace _Game.StatSystem
