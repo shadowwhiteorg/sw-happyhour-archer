@@ -15,10 +15,13 @@ namespace _Game.CombatSystem
         [SerializeField] private StatConfig statConfig;
         [SerializeField] private List<BaseSkill> initialSkills;
         [SerializeField] private List<BaseSkill> activeSkills;
+        [SerializeField] private CharacterModel characterModel;
         public CharacterState CharacterState;
         public StatController StatController;
         public MovingActor MovingActor => GetComponent<MovingActor>();
         public AttackingActor AttackingActor => GetComponent<AttackingActor>();
+        
+        public CharacterModel CharacterModel => characterModel;
         private float _currentHealth;
         public float CurrentHealth => _currentHealth;
         public float BaseHealth { get; set; }
@@ -83,10 +86,15 @@ namespace _Game.CombatSystem
                 StopAllCoroutines();
                 Die();
             }
+            else
+            {
+                characterModel.PlayHitAnimation();
+            }
         }
 
         protected virtual void Die()
         {
+            // characterModel.PlayDeathAnimation();
             EventManager.FireOnTargetDeath(this);
         }
         

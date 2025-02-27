@@ -187,9 +187,9 @@ namespace _Game.CombatSystem
                 _target = CombatManager.Instance.FindNearestEnemy(transform.position, 50,(EnemyCharacter)target,_targetedEnemies);
                 _targetPosition = _target.GetPosition();
                 if(_usingUnityPhysics)
-                    UnityPhysicsLaunch(transform.position+Vector3.up*0.1f, _targetPosition);
+                    UnityPhysicsLaunch(transform.position+Vector3.up*1f, _targetPosition);
                 else
-                    KinematicLaunch(transform.position + Vector3.up*0.1f, _targetPosition);
+                    KinematicLaunch(transform.position + Vector3.up*1f, _targetPosition);
                 mOldTarget.TakeDamage(_damage);
             }
             else
