@@ -152,6 +152,8 @@ MonoBehaviour:
   activeSkills: []
   characterModel: {fileID: 9076998925823950680}
   healthBar: {fileID: 7432039475987966802}
+  damageNumber: {fileID: 3106269974086679045, guid: 0b83288bbe5441f41a5ff283f6345b6a, type: 3}
+  burnDamageNumber: {fileID: 2449900319499816613, guid: 9da1c56049084694badda6f6adf30bc4, type: 3}
   CharacterState: 0
 --- !u!1 &9008965947331827826
 GameObject:

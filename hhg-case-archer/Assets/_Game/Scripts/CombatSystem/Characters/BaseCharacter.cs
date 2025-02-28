@@ -7,6 +7,7 @@ using _Game.DataStructures;
 using _Game.Scripts.UISystem;
 using _Game.SkillSystem;
 using _Game.StatSystem;
+using DamageNumbersPro;
 using UnityEngine;
 
 namespace _Game.CombatSystem
@@ -18,6 +19,8 @@ namespace _Game.CombatSystem
         [SerializeField] private List<BaseSkill> activeSkills;
         [SerializeField] private CharacterModel characterModel;
         [SerializeField] private HealthBar healthBar;
+        [SerializeField] private DamageNumber damageNumber;
+        [SerializeField] private DamageNumber burnDamageNumber;
         public CharacterState CharacterState;
         public StatController StatController;
         public MovingActor MovingActor => GetComponent<MovingActor>();
@@ -39,13 +42,15 @@ namespace _Game.CombatSystem
             StatController = new StatController(statConfig);
             BaseHealth = StatController.GetStatValue(StatType.Health);
             _currentHealth = BaseHealth;
-            healthBar.UpdateHealthBar(_currentHealth, BaseHealth);
-            healthBar.transform.LookAt(Camera.main?.transform);
+            // healthBar.UpdateHealthBar(_currentHealth, BaseHealth);
+            // healthBar.transform.LookAt(Camera.main?.transform);
             foreach (var skill in initialSkills)
             {
                 LearnSkill(skill);
             }
         }
+        
+
         public virtual Vector3 GetPosition()
         {
             return transform.position;
@@ -71,7 +76,9 @@ namespace _Game.CombatSystem
         {
             while (effect.Duration > 0)
             {
-                TakeDamage(effect.DamagePerSecond);
+                if(effect.Type==StatusEffectType.Fire)
+                    burnDamageNumber.Spawn(transform.position + Vector3.up*3f, effect.DamagePerSecond);
+                TakeDamage(effect.DamagePerSecond,true);
                 yield return new WaitForSeconds(1f);
                 effect.Duration -= 1f;
             }
@@ -80,11 +87,13 @@ namespace _Game.CombatSystem
             _activeEffects.Remove(effect.Type);
         }
 
-        public void TakeDamage(float damage)
+        public void TakeDamage(float damage, bool fromStatusEffect = false)
         {
             Debug.Log("Taking Damage "+damage);
             _currentHealth -= damage;
             healthBar.UpdateHealthBar(_currentHealth , BaseHealth);
+            if(!fromStatusEffect)
+                damageNumber.Spawn(transform.position+Vector3.up*2.5f, damage);
             if (_currentHealth <= 0)
             {
                 StopAllCoroutines();
