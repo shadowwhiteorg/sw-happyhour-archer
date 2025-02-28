@@ -9,16 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c579856dee9144f596e1b5e41765eb3f, type: 3}
-  m_Name: RageSkill
+  m_Script: {fileID: 11500000, guid: da6c2aa02400497c93f6b9d168b87215, type: 3}
+  m_Name: RageSkillEffect
   m_EditorClassIdentifier: 
-  skillName: 
-  description: 
-  skillType: 0
-  cooldown: 0
-  cost: 0
-  icon: {fileID: 0}
-  skillEffects:
-  - {fileID: 0}
-  isFromRage: 0
-  baseSkills: []

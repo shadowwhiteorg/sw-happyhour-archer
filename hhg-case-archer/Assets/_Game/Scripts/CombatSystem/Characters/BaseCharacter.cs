@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections;
+using System.Linq;
 using _Game.Enums;
 using _Game.Interfaces;
 using _Game.Managers;
@@ -31,6 +32,7 @@ namespace _Game.CombatSystem
         public float CurrentHealth => _currentHealth;
         public float BaseHealth { get; set; }
         private Dictionary<StatusEffectType, StatusEffect> _activeEffects = new Dictionary<StatusEffectType, StatusEffect>();
+        private List<BaseSkill> _duplicatedSkills = new List<BaseSkill>();
 
         private void Start()
         {
@@ -120,6 +122,11 @@ namespace _Game.CombatSystem
 
         public void RemoveSkill(BaseSkill skill)
         {
+            if (AttackingActor.InRage)
+            {
+                skill.CoupleSkill?.RemoveSkill(this);
+                activeSkills.Remove(skill.CoupleSkill);
+            }
             skill.RemoveSkill(this);
             activeSkills.Remove(skill);
         }
@@ -133,6 +140,43 @@ namespace _Game.CombatSystem
                 yield return null;
             }
             Destroy(gameObject);
+        }
+        
+        public void DuplicateActiveSkills()
+        {
+            List<BaseSkill> duplicatedSkills = new List<BaseSkill>();
+
+            foreach (var skill in activeSkills)
+            {
+                var duplicatedSkill = skill.CreateDuplicate();
+                duplicatedSkill.SetCoupleSkill(skill);
+                duplicatedSkills.Add(duplicatedSkill);
+            }
+
+            foreach (var duplicatedSkill in duplicatedSkills)
+            {
+                LearnSkill(duplicatedSkill);
+            }
+        }
+        
+        public void RemoveAllDuplicatedSkills()
+        {
+            var skillsToRemove = activeSkills.Where(skill => skill.CoupleSkill != null).ToList();
+            // foreach (var skill in activeSkills)
+            // {
+            //     if (skill.CoupleSkill != null)
+            //     {
+            //         skill.SetCoupleSkill(null);
+            //     }
+            // }
+            foreach (var skill in skillsToRemove)
+            {
+                skill.RemoveSkill(this);
+                activeSkills.Remove(skill);
+            }
+            // remove couple skills of active skills that has couple skill
+           
+            
         }
         
     }

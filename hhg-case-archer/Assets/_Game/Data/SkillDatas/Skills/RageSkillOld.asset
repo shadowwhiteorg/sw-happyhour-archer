@@ -10,12 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0eded3d9d26747808ab82f47db34d705, type: 3}
-  m_Name: RageSkill
+  m_Name: RageSkillOld
   m_EditorClassIdentifier: 
   skillName: RAGE
   description: Doubles the skill effects
   skillType: 3
   cooldown: 0
   cost: 0
-  icon: {fileID: 0}
-  skillEffects: []
+  icon: {fileID: 21300000, guid: 2cdaf07465996154791552778f46faeb, type: 3}
+  skillEffects:
+  - {fileID: 11400000, guid: 500972db80ce19e47a35c075aa802674, type: 2}
+  isFromRage: 0

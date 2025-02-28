@@ -29,6 +29,22 @@ namespace _Game.StatSystem
             }
             return finalValue * percentMultiplier;
         }
+        
+        public float GetValueNew()
+        {
+            float finalValue = BaseValue;
+            float percentMultiplier = 1f;
+
+            foreach (var mod in _modifiers)
+            {
+                if (mod.Type == ModifierType.Flat)
+                    finalValue += mod.Value;
+                else if (mod.Type == ModifierType.Percentage)
+                    percentMultiplier *= (1f + mod.Value / 100f); // Multiplicative stacking
+            }
+
+            return finalValue * percentMultiplier;
+        }
     
         public void AddModifier(StatModifier modifier)
         {

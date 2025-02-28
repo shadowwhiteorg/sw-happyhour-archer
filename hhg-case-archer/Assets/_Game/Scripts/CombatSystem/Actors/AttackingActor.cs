@@ -10,6 +10,7 @@ namespace _Game.CombatSystem
     {
         [SerializeField] private Weapon weapon;
         private BaseCharacter _character;
+        public bool InRage;
         public Weapon Weapon => weapon;
         public override void Initialize(BaseCharacter character)
         {

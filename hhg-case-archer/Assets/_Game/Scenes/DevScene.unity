@@ -1395,7 +1395,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 9044918585310842826, guid: b988fccd46058ee4f9f245da6541b529, type: 3}
-  enemyCount: 3
+  enemyCount: 5
   spawnRadius: 15
   spawnCenter: {fileID: 1684936894}
 --- !u!4 &2011296551 stripped
