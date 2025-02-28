@@ -33,7 +33,7 @@ namespace _Game.StatSystem
             _modifiers.Remove(modifier);
             RecalculateValue();
         }
-
+        
         private void RecalculateValue()
         {
             // _currentValue = BaseValue;

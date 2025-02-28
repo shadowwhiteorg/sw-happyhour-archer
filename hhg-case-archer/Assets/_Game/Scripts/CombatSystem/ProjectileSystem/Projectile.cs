@@ -99,83 +99,180 @@ namespace _Game.CombatSystem
             return true;
         }
         
+        [SerializeField] private float baseApexHeight = 50f; // Default apex height at low speed
+        [SerializeField] private float speedFactor = 0.5f;
         
-        private void KinematicLaunch(Vector3 origin, Vector3 target)
+        private IEnumerator KinematicMovementCoroutine(Vector3 start, Vector3 target, IDamageable targetDamageable)
+    {
+        Vector3 startPos = start;
+        Vector3 targetPos = target;
+        float distance = Vector3.Distance(startPos, targetPos);
+
+        // Dynamically calculate apex height based on speed
+        float apexHeight = CalculateApexHeight(_weapon.Owner.StatController.GetStatValue(StatType.AttackSpeed));
+
+        // Calculate the horizontal midpoint and set apex height
+        Vector3 midPoint = (startPos + targetPos) / 2f;
+        midPoint.y = Mathf.Max(startPos.y, targetPos.y) + apexHeight;
+
+        float totalTime = distance / _weapon.Owner.StatController.GetStatValue(StatType.AttackSpeed);
+        float elapsedTime = 0f;
+
+        while (elapsedTime < totalTime)
         {
-            _startPosition = origin;
-            _targetPosition = target;
-            transform.position = _startPosition;
-            _time = 0f;
-        
-            if (!CalculateLaunchVelocity(out Vector3 velocity))
-            {
-                Debug.LogError("Not enough speed to reach the target!");
-                return;
-            }
+            elapsedTime += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsedTime / totalTime);
 
-            if (this.gameObject.activeSelf)
-            {
-                float mDistSign = Mathf.Sign(_startPosition.magnitude - _targetPosition.magnitude);
-                StartCoroutine(KinematicMovementCoroutine(velocity, _targetPosition, _target, mDistSign));
-                
-            }
+            // Quadratic Bezier interpolation
+            Vector3 position = CalculateBezierPoint(startPos, midPoint, targetPos, t);
+            transform.position = position;
+
+            yield return null;
         }
-        
-        private bool CalculateLaunchVelocity(out Vector3 velocity)
+
+        transform.position = targetPos;
+        HitTarget(targetDamageable);
+    }
+
+    private float CalculateApexHeight(float speed)
+    {
+        // Inverse relationship: higher speed → lower apex height
+        return baseApexHeight / (1 + speed * speedFactor);
+    }
+
+    private Vector3 CalculateBezierPoint(Vector3 p0, Vector3 p1, Vector3 p2, float t)
+    {
+        float u = 1 - t;
+        float tt = t * t;
+        float uu = u * u;
+
+        Vector3 point = uu * p0; // (1-t)^2 * p0
+        point += 2 * u * t * p1; // 2*(1-t)*t * p1
+        point += tt * p2; // t^2 * p2
+
+        return point;
+    }
+
+    // Modify the KinematicLaunch method to use the new coroutine
+    private void KinematicLaunch(Vector3 origin, Vector3 target)
+    {
+        _startPosition = origin;
+        _targetPosition = target;
+        transform.position = _startPosition;
+        Debug.Log("shooting speed" + _weapon.Owner.StatController.GetStatValue(StatType.AttackSpeed));
+        if (this.gameObject.activeSelf)
         {
-            velocity = Vector3.zero;
-            Vector3 toTarget = _targetPosition - _startPosition;
-            float horizontalDistance = new Vector3(toTarget.x, 0, toTarget.z).magnitude;
-            float heightDifference = _targetPosition.y - _startPosition.y;
-            float gravity = Mathf.Abs(Physics.gravity.y);
-
-            // If speed is too low, adjust it to the minimum required speed
-            float minSpeedRequired = Mathf.Sqrt(gravity * horizontalDistance * horizontalDistance / (2 * heightDifference));
-            if (_shootingSpeed < minSpeedRequired)
-            {
-                _shootingSpeed = minSpeedRequired;
-            }
-
-            // Solve for the required angle
-            float termInsideSqrt = (_shootingSpeed * _shootingSpeed * _shootingSpeed * _shootingSpeed) -
-                                   gravity * (gravity * horizontalDistance * horizontalDistance + 2 * heightDifference * _shootingSpeed * _shootingSpeed);
-
-            if (termInsideSqrt < 0)
-                return false; // No valid solution for given speed
-
-            float thetaLow = Mathf.Atan((_shootingSpeed * _shootingSpeed - Mathf.Sqrt(termInsideSqrt)) / (gravity * horizontalDistance));
-            float thetaHigh = Mathf.Atan((_shootingSpeed * _shootingSpeed + Mathf.Sqrt(termInsideSqrt)) / (gravity * horizontalDistance));
-
-            // Choose the lower angle for a more natural feel
-            float theta = Mathf.Min(thetaLow, thetaHigh);
-
-            // Convert to velocity components
-            float vx = _shootingSpeed * Mathf.Cos(theta);
-            float vy = _shootingSpeed * Mathf.Sin(theta);
-
-            velocity = new Vector3(toTarget.x / horizontalDistance * vx, vy, toTarget.z / horizontalDistance * vx);
-            return true;
+            StartCoroutine(KinematicMovementCoroutine(_startPosition, _targetPosition, _target));
         }
+    }
         
-
+        // private void KinematicLaunch(Vector3 origin, Vector3 target)
+        // {
+        //     _startPosition = origin;
+        //     _targetPosition = target;
+        //     transform.position = _startPosition;
+        //     _time = 0f;
+        //
+        //     if (!CalculateLaunchVelocity(out Vector3 velocity))
+        //     {
+        //         Debug.LogError("Not enough speed to reach the target!");
+        //         return;
+        //     }
+        //
+        //     if (this.gameObject.activeSelf)
+        //     {
+        //         float mDistSign = Mathf.Sign(_startPosition.magnitude - _targetPosition.magnitude);
+        //         StartCoroutine(KinematicMovementCoroutine(velocity, _targetPosition, _target, mDistSign));
+        //         
+        //     }
+        // }
+        //
         
-
-        IEnumerator KinematicMovementCoroutine(Vector3 velocity, Vector3 target, IDamageable targetDamageable, float distSign = 1)
-        {
-            float mDistSign = distSign;
-            while (Vector3.Distance(transform.position, target) > 1f && mDistSign * distSign > 0)
-            {
-                _time += Time.deltaTime;
-
-                // Apply arc motion using kinematic equations
-                Vector3 displacement = velocity * _time + Physics.gravity * (0.5f * (_time * _time));
-                transform.position = _startPosition + displacement;
-                mDistSign = Mathf.Sign(transform.position.magnitude - _targetPosition.magnitude);
-                yield return null;
-            }
-            transform.position = target;
-            HitTarget(targetDamageable);
-        }
+        // private bool CalculateLaunchVelocity(out Vector3 velocity)
+        // {
+        //     velocity = Vector3.zero;
+        //     Vector3 toTarget = _targetPosition - _startPosition;
+        //     float horizontalDistance = new Vector3(toTarget.x, 0, toTarget.z).magnitude;
+        //     float heightDifference = _targetPosition.y - _startPosition.y;
+        //     float gravity = Mathf.Abs(Physics.gravity.y);
+        //
+        //     // 1️⃣ Control the arc slope: lower slope at higher speed
+        //     float heightFactor = Mathf.Lerp(0.2f, 1.5f, Mathf.Clamp01(5f / _shootingSpeed)); // Higher speed → Flatter arc
+        //     float maxHeight = Mathf.Max(_startPosition.y, _targetPosition.y) + heightFactor * horizontalDistance;
+        //
+        //     // 2️⃣ Compute vertical velocity to reach maxHeight
+        //     float v_iy = Mathf.Sqrt(2 * gravity * (maxHeight - _startPosition.y));
+        //
+        //     // 3️⃣ Compute total flight time
+        //     float timeUp = v_iy / gravity;
+        //     float timeDown = Mathf.Sqrt(2 * (maxHeight - _targetPosition.y) / gravity);
+        //     float totalTime = timeUp + timeDown;
+        //
+        //     // 4️⃣ Ensure horizontal speed scales with shooting speed
+        //     float v_xz = horizontalDistance / totalTime;
+        //     Vector3 horizontalDir = new Vector3(toTarget.x, 0, toTarget.z).normalized;
+        //
+        //     // 5️⃣ Compute final velocity
+        //     velocity = horizontalDir * v_xz + Vector3.up * v_iy;
+        //
+        //     return true;
+        // }
+        //
+        // private bool CalculateLaunchVelocity2(out Vector3 velocity)
+        // {
+        //     velocity = Vector3.zero;
+        //     Vector3 toTarget = _targetPosition - _startPosition;
+        //     float horizontalDistance = new Vector3(toTarget.x, 0, toTarget.z).magnitude;
+        //     float heightDifference = (_targetPosition.y - _startPosition.y);
+        //     float gravity = Mathf.Abs(Physics.gravity.y);
+        //
+        //     // If speed is too low, adjust it to the minimum required speed
+        //     float minSpeedRequired = Mathf.Sqrt(gravity * horizontalDistance * horizontalDistance / (2 * heightDifference));
+        //     if (_shootingSpeed < minSpeedRequired)
+        //     {
+        //         _shootingSpeed = minSpeedRequired;
+        //     }
+        //
+        //     // Solve for the required angle
+        //     float termInsideSqrt = (_shootingSpeed * _shootingSpeed * _shootingSpeed * _shootingSpeed) -
+        //                            gravity * (gravity * horizontalDistance * horizontalDistance + 2 * heightDifference * _shootingSpeed * _shootingSpeed);
+        //
+        //     if (termInsideSqrt < 0)
+        //         return false; // No valid solution for given speed
+        //
+        //     float thetaLow = Mathf.Atan((_shootingSpeed * _shootingSpeed - Mathf.Sqrt(termInsideSqrt)) / (gravity * horizontalDistance));
+        //     float thetaHigh = Mathf.Atan((_shootingSpeed * _shootingSpeed + Mathf.Sqrt(termInsideSqrt)) / (gravity * horizontalDistance));
+        //
+        //     // Choose the lower angle for a more natural feel
+        //     float theta = Mathf.Min(thetaLow, thetaHigh);
+        //
+        //     // Convert to velocity components
+        //     float vx = _shootingSpeed * Mathf.Cos(theta);
+        //     float vy = _shootingSpeed * Mathf.Sin(theta);
+        //
+        //     velocity = new Vector3(toTarget.x / horizontalDistance * vx, vy, toTarget.z / horizontalDistance * vx);
+        //     return true;
+        // }
+        //
+        //
+        //
+        //
+        // IEnumerator KinematicMovementCoroutine(Vector3 velocity, Vector3 target, IDamageable targetDamageable, float distSign = 1)
+        // {
+        //     float mDistSign = distSign;
+        //     while (Vector3.Distance(transform.position, target) > 1f && mDistSign * distSign > 0)
+        //     {
+        //         _time += Time.deltaTime;
+        //
+        //         // Apply arc motion using kinematic equations
+        //         Vector3 displacement = velocity * _time + Physics.gravity * (0.5f * (_time * _time));
+        //         transform.position = _startPosition + displacement;
+        //         mDistSign = Mathf.Sign(transform.position.magnitude - _targetPosition.magnitude);
+        //         yield return null;
+        //     }
+        //     transform.position = target;
+        //     HitTarget(targetDamageable);
+        // }
         
         private void HitTarget(IDamageable target)
         {
