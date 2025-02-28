@@ -45,14 +45,8 @@ namespace _Game.CombatSystem
         {
             _ricochetCount = (int)ricochetCount;
             _usingUnityPhysics = usingUnityPhysics;
-            if (_usingUnityPhysics)
-            {
-                UnityPhysicsLaunch(_weapon.FirePoint.position, _targetPosition);
-            }
-            else
-            {
-                KinematicLaunch(_weapon.FirePoint.position, _targetPosition);
-            }
+            
+            KinematicLaunch(_weapon.FirePoint.position, _targetPosition);
         }
 
 
@@ -166,58 +160,7 @@ namespace _Game.CombatSystem
         }
     }
         
-        // private void KinematicLaunch(Vector3 origin, Vector3 target)
-        // {
-        //     _startPosition = origin;
-        //     _targetPosition = target;
-        //     transform.position = _startPosition;
-        //     _time = 0f;
-        //
-        //     if (!CalculateLaunchVelocity(out Vector3 velocity))
-        //     {
-        //         Debug.LogError("Not enough speed to reach the target!");
-        //         return;
-        //     }
-        //
-        //     if (this.gameObject.activeSelf)
-        //     {
-        //         float mDistSign = Mathf.Sign(_startPosition.magnitude - _targetPosition.magnitude);
-        //         StartCoroutine(KinematicMovementCoroutine(velocity, _targetPosition, _target, mDistSign));
-        //         
-        //     }
-        // }
-        //
         
-        // private bool CalculateLaunchVelocity(out Vector3 velocity)
-        // {
-        //     velocity = Vector3.zero;
-        //     Vector3 toTarget = _targetPosition - _startPosition;
-        //     float horizontalDistance = new Vector3(toTarget.x, 0, toTarget.z).magnitude;
-        //     float heightDifference = _targetPosition.y - _startPosition.y;
-        //     float gravity = Mathf.Abs(Physics.gravity.y);
-        //
-        //     // 1️⃣ Control the arc slope: lower slope at higher speed
-        //     float heightFactor = Mathf.Lerp(0.2f, 1.5f, Mathf.Clamp01(5f / _shootingSpeed)); // Higher speed → Flatter arc
-        //     float maxHeight = Mathf.Max(_startPosition.y, _targetPosition.y) + heightFactor * horizontalDistance;
-        //
-        //     // 2️⃣ Compute vertical velocity to reach maxHeight
-        //     float v_iy = Mathf.Sqrt(2 * gravity * (maxHeight - _startPosition.y));
-        //
-        //     // 3️⃣ Compute total flight time
-        //     float timeUp = v_iy / gravity;
-        //     float timeDown = Mathf.Sqrt(2 * (maxHeight - _targetPosition.y) / gravity);
-        //     float totalTime = timeUp + timeDown;
-        //
-        //     // 4️⃣ Ensure horizontal speed scales with shooting speed
-        //     float v_xz = horizontalDistance / totalTime;
-        //     Vector3 horizontalDir = new Vector3(toTarget.x, 0, toTarget.z).normalized;
-        //
-        //     // 5️⃣ Compute final velocity
-        //     velocity = horizontalDir * v_xz + Vector3.up * v_iy;
-        //
-        //     return true;
-        // }
-        //
         // private bool CalculateLaunchVelocity2(out Vector3 velocity)
         // {
         //     velocity = Vector3.zero;

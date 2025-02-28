@@ -74,6 +74,9 @@ namespace _Game.CombatSystem
             }
         }
         
+        
+        
+        
         private IEnumerator HandleStatusEffect(StatusEffect effect)
         {
             while (effect.Duration > 0)
@@ -161,15 +164,12 @@ namespace _Game.CombatSystem
         
         public void RemoveAllDuplicatedSkills()
         {
-            var skillsToRemove = activeSkills.Where(skill => skill.CoupleSkill != null).ToList();
-            foreach (var skill in skillsToRemove)
+            var mSkillsToRemove = activeSkills.Where(skill => skill.CoupleSkill != null).ToList();
+            foreach (var skill in mSkillsToRemove)
             {
                 skill.RemoveSkill(this);
                 activeSkills.Remove(skill);
             }
-            // remove couple skills of active skills that has couple skill
-           
-            
         }
         
     }
