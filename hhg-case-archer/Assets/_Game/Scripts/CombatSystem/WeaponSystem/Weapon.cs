@@ -67,6 +67,7 @@ namespace _Game.CombatSystem
         public void SetCurrentTarget()
         {
             _currentTarget = CombatManager.Instance.FindNearestEnemy(transform.position, 50);
+            _owner.transform.LookAt(CurrentTarget.GetPosition());
         }
 
         public void Attack()
