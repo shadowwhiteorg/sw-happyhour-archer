@@ -47,6 +47,7 @@ namespace _Game.SkillSystem
             foreach (var effect in skillEffects)
             {
                 effect.RemoveEffect(character);
+                Debug.Log("Remove Effect " + skillName);
             }
         }
 

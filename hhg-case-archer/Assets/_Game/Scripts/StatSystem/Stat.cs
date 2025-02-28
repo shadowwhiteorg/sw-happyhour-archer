@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using _Game.DataStructures;
 using _Game.Enums;
+using Mono.Cecil.Cil;
 using UnityEngine;
 
 namespace _Game.StatSystem
@@ -17,10 +19,7 @@ namespace _Game.StatSystem
             _currentValue = baseValue;
         }
 
-        public float GetValue()
-        {
-            return _currentValue;
-        }
+        public float GetValue() => _currentValue;
 
         public void AddModifier(StatModifier modifier)
         {
@@ -30,23 +29,38 @@ namespace _Game.StatSystem
 
         public void RemoveModifier(StatModifier modifier)
         {
-            _modifiers.Remove(modifier);
+            // remove modifier with the same value and same type from the list
+            var existingModifier = _modifiers.FirstOrDefault(m => m.Value == modifier.Value && m.Type == modifier.Type);
+            if (existingModifier != null)
+            {
+                Debug.Log("remove modifier at stat "+_modifiers.Contains(existingModifier));
+                _modifiers.Remove(existingModifier);
+            }
             RecalculateValue();
         }
-        
+
         private void RecalculateValue()
         {
-            // _currentValue = BaseValue;
+            Debug.Log("Number of modifiers: " + _modifiers.Count);
+            // 1️⃣ RESET TO BASE VALUE FIRST - MOST CRITICAL FIX
+            _currentValue = BaseValue;
+
             float percentMultiplier = 1f;
 
-            foreach (var mod in _modifiers)
+            // 2️⃣ PROCESS FLAT MODIFIERS FIRST
+            foreach (var mod in _modifiers.Where(m => m.Type == ModifierType.Flat))
             {
-                if (mod.Type == ModifierType.Flat)
-                    _currentValue += mod.Value;
-                else if (mod.Type == ModifierType.Percentage)
-                    percentMultiplier *= (1f + mod.Value / 100f); // Multiplicative stacking
+                _currentValue += mod.Value;
             }
 
+            // 3️⃣ PROCESS PERCENTAGE MODIFIERS SECOND (multiplicative)
+            foreach (var mod in _modifiers.Where(m => m.Type == ModifierType.Percentage))
+            {
+                percentMultiplier *= 1f + mod.Value / 100f;
+            }
+
+            // 4️⃣ APPLY PERCENTAGE MULTIPLIER
+            Debug.Log("Percent Multiplier: " + percentMultiplier + " Current Value: " + _currentValue);
             _currentValue *= percentMultiplier;
         }
     }
