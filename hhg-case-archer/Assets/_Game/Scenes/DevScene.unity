@@ -1343,7 +1343,7 @@ Transform:
   m_GameObject: {fileID: 1684936894}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.24, y: 0, z: 14.46}
+  m_LocalPosition: {x: 0.24, y: 0, z: 5.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1395,8 +1395,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 9044918585310842826, guid: b988fccd46058ee4f9f245da6541b529, type: 3}
-  enemyCount: 6
-  spawnRadius: 10
+  enemyCount: 3
+  spawnRadius: 15
   spawnCenter: {fileID: 1684936894}
 --- !u!4 &2011296551 stripped
 Transform:
@@ -2433,8 +2433,8 @@ SceneRoots:
   - {fileID: 1683651506}
   - {fileID: 4189409442292080637}
   - {fileID: 1308675669}
-  - {fileID: 1181748637}
   - {fileID: 1371383474}
+  - {fileID: 1181748637}
   - {fileID: 666292967}
   - {fileID: 916878951}
   - {fileID: 1439859255}

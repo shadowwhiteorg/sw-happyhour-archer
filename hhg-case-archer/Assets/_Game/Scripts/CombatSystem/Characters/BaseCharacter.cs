@@ -42,8 +42,8 @@ namespace _Game.CombatSystem
             StatController = new StatController(statConfig);
             BaseHealth = StatController.GetStatValue(StatType.Health);
             _currentHealth = BaseHealth;
-            // healthBar.UpdateHealthBar(_currentHealth, BaseHealth);
-            // healthBar.transform.LookAt(Camera.main?.transform);
+            healthBar?.UpdateHealthBar(_currentHealth, BaseHealth);
+            healthBar?.transform.LookAt(Camera.main?.transform);
             foreach (var skill in initialSkills)
             {
                 LearnSkill(skill);
@@ -89,7 +89,6 @@ namespace _Game.CombatSystem
 
         public void TakeDamage(float damage, bool fromStatusEffect = false)
         {
-            Debug.Log("Taking Damage "+damage);
             _currentHealth -= damage;
             healthBar.UpdateHealthBar(_currentHealth , BaseHealth);
             if(!fromStatusEffect)

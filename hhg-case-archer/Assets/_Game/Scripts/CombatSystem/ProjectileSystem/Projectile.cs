@@ -183,7 +183,8 @@ namespace _Game.CombatSystem
                 var mOldTarget = _target;
                 _shootingSpeed = _shootingSpeed = _weapon.ShootingSpeed;
                 _target = CombatManager.Instance.FindNearestEnemy(transform.position, 50,(EnemyCharacter)target,_targetedEnemies);
-                _targetPosition = _target.GetPosition();
+                if(target!=null)
+                    _targetPosition = _target.GetPosition();
                 if(_usingUnityPhysics)
                     UnityPhysicsLaunch(transform.position+Vector3.up*.1f, _targetPosition);
                 else

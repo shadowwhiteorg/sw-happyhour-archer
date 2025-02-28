@@ -67,7 +67,6 @@ namespace _Game.InputSystem
         private void StartControl(BaseCharacter character)
         {
             if(character is not PlayerCharacter) return;
-            Debug.Log("StartInputControl");
             JoystickHandler.Instance.ShowJoystick(Input.mousePosition);
             _firstMousePosition = Input.mousePosition;
             _hasControl = true;
