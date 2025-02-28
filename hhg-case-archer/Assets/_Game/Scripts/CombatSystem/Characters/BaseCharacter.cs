@@ -162,13 +162,6 @@ namespace _Game.CombatSystem
         public void RemoveAllDuplicatedSkills()
         {
             var skillsToRemove = activeSkills.Where(skill => skill.CoupleSkill != null).ToList();
-            // foreach (var skill in activeSkills)
-            // {
-            //     if (skill.CoupleSkill != null)
-            //     {
-            //         skill.SetCoupleSkill(null);
-            //     }
-            // }
             foreach (var skill in skillsToRemove)
             {
                 skill.RemoveSkill(this);

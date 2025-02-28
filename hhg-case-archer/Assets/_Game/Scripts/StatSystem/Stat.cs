@@ -7,59 +7,47 @@ namespace _Game.StatSystem
 {
     public class Stat
     {
-        public float BaseValue;
+        public float BaseValue { get; private set; }
+        private float _currentValue;
         private List<StatModifier> _modifiers = new List<StatModifier>();
-    
+
         public Stat(float baseValue)
         {
             BaseValue = baseValue;
+            _currentValue = baseValue;
         }
-    
+
         public float GetValue()
         {
-            float finalValue = BaseValue;
-            float percentMultiplier = 1f;
-        
-            foreach (var mod in _modifiers)
-            {
-                if (mod.Type == ModifierType.Flat)
-                    finalValue += mod.Value;
-                else if (mod.Type == ModifierType.Percentage)
-                    percentMultiplier += mod.Value / 100f;
-            }
-            return finalValue * percentMultiplier;
+            return _currentValue;
         }
-        
-        public float GetValueNew()
+
+        public void AddModifier(StatModifier modifier)
         {
-            float finalValue = BaseValue;
+            _modifiers.Add(modifier);
+            RecalculateValue();
+        }
+
+        public void RemoveModifier(StatModifier modifier)
+        {
+            _modifiers.Remove(modifier);
+            RecalculateValue();
+        }
+
+        private void RecalculateValue()
+        {
+            // _currentValue = BaseValue;
             float percentMultiplier = 1f;
 
             foreach (var mod in _modifiers)
             {
                 if (mod.Type == ModifierType.Flat)
-                    finalValue += mod.Value;
+                    _currentValue += mod.Value;
                 else if (mod.Type == ModifierType.Percentage)
                     percentMultiplier *= (1f + mod.Value / 100f); // Multiplicative stacking
             }
 
-            return finalValue * percentMultiplier;
-        }
-    
-        public void AddModifier(StatModifier modifier)
-        {
-            _modifiers.Add(modifier);
-        }
-    
-        public void RemoveModifier(StatModifier modifier)
-        {   
-            // Option 1
-            // _modifiers.Remove(modifier);
-            
-            // Option 2
-            float modifierValue = modifier.Value;
-            modifier.Value = - modifierValue;
-            _modifiers.Add(modifier);
+            _currentValue *= percentMultiplier;
         }
     }
 }
