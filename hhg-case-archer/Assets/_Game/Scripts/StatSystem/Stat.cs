@@ -36,8 +36,14 @@ namespace _Game.StatSystem
         }
     
         public void RemoveModifier(StatModifier modifier)
-        {
-            _modifiers.Remove(modifier);
+        {   
+            // Option 1
+            // _modifiers.Remove(modifier);
+            
+            // Option 2
+            float modifierValue = modifier.Value;
+            modifier.Value = - modifierValue;
+            _modifiers.Add(modifier);
         }
     }
 }
