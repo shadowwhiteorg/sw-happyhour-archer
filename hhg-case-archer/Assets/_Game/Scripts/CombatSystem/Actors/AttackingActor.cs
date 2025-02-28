@@ -49,7 +49,6 @@ namespace _Game.CombatSystem
                     yield return new WaitForSeconds(0.2f);
                 }
                 float delay = 1 / (_character.StatController.GetStatValue(StatType.AttackSpeed).Map(15, 60, 2, 1));
-                Debug.Log("Delay: "+delay);
                 yield return new WaitForSeconds(delay);
             }
         }

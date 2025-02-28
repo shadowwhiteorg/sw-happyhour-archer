@@ -4,6 +4,7 @@ using _Game.Enums;
 using _Game.Interfaces;
 using _Game.Managers;
 using _Game.DataStructures;
+using _Game.Scripts.UISystem;
 using _Game.SkillSystem;
 using _Game.StatSystem;
 using UnityEngine;
@@ -16,6 +17,7 @@ namespace _Game.CombatSystem
         [SerializeField] private List<BaseSkill> initialSkills;
         [SerializeField] private List<BaseSkill> activeSkills;
         [SerializeField] private CharacterModel characterModel;
+        [SerializeField] private HealthBar healthBar;
         public CharacterState CharacterState;
         public StatController StatController;
         public MovingActor MovingActor => GetComponent<MovingActor>();
@@ -27,7 +29,6 @@ namespace _Game.CombatSystem
         public float BaseHealth { get; set; }
         private Dictionary<StatusEffectType, StatusEffect> _activeEffects = new Dictionary<StatusEffectType, StatusEffect>();
 
-
         private void Start()
         {
             Initialize();
@@ -38,6 +39,8 @@ namespace _Game.CombatSystem
             StatController = new StatController(statConfig);
             BaseHealth = StatController.GetStatValue(StatType.Health);
             _currentHealth = BaseHealth;
+            healthBar.UpdateHealthBar(_currentHealth, BaseHealth);
+            healthBar.transform.LookAt(Camera.main?.transform);
             foreach (var skill in initialSkills)
             {
                 LearnSkill(skill);
@@ -81,6 +84,7 @@ namespace _Game.CombatSystem
         {
             Debug.Log("Taking Damage "+damage);
             _currentHealth -= damage;
+            healthBar.UpdateHealthBar(_currentHealth , BaseHealth);
             if (_currentHealth <= 0)
             {
                 StopAllCoroutines();
@@ -95,6 +99,7 @@ namespace _Game.CombatSystem
         protected virtual void Die()
         {
             characterModel.PlayDeathAnimation();
+            healthBar.gameObject.SetActive(false);
             StartCoroutine(DisableAfterDie());
             EventManager.FireOnTargetDeath(this);
         }
@@ -114,7 +119,7 @@ namespace _Game.CombatSystem
         private IEnumerator DisableAfterDie()
         {
             yield return new WaitForSeconds(1f);
-            while(transform.position.y > -10)
+            while(transform.position.y > -2)
             {
                 transform.position -= Vector3.up * Time.deltaTime;
                 yield return null;
