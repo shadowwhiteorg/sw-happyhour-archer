@@ -22,16 +22,13 @@ namespace _Game.InputSystem
         {
             base.Awake();
             if (!joystick || !joystickHandle)
-                Debug.LogError("JoystickHandler: Joystick or JoystickHandle is not assigned!");
             joystick.gameObject.SetActive(false);
         }
 
         public void ShowJoystick(Vector3 targetPosition)
         {
-            Debug.Log("TryToShowJoystick");
             if (!_isActive)
             {
-                Debug.Log("ShowJoystick");
                 joystick.gameObject.SetActive(true);
                 _isActive = true;
             }
@@ -44,7 +41,6 @@ namespace _Game.InputSystem
         {
             if (_isActive)
             {
-                Debug.Log("HideJoystick");
                 joystick.gameObject.SetActive(false);
                 joystickHandle.localPosition = Vector3.zero;
                 _isActive = false;

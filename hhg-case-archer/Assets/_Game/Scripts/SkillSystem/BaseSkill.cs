@@ -35,11 +35,6 @@ namespace _Game.SkillSystem
             {
                 effect.ApplyEffect(character);
             }
-            // for (int i = 0; i < _applicationCount; i++)
-            // {
-            //    
-            // }
-            
         }
 
         public void RemoveSkill(BaseCharacter character)
@@ -47,7 +42,6 @@ namespace _Game.SkillSystem
             foreach (var effect in skillEffects)
             {
                 effect.RemoveEffect(character);
-                Debug.Log("Remove Effect " + skillName);
             }
         }
 
@@ -58,8 +52,8 @@ namespace _Game.SkillSystem
         
         public BaseSkill CreateDuplicate()
         {
-            BaseSkill duplicate = Instantiate(this); // Create a new instance
-            duplicate.name = this.name + " (Duplicated)"; // Optional: Rename for clarity
+            BaseSkill duplicate = Instantiate(this);
+            duplicate.name = this.name + " (Duplicated)";
             return duplicate;
         }
 
