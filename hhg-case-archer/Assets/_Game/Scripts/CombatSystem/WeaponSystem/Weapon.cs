@@ -69,7 +69,7 @@ namespace _Game.CombatSystem
             _currentTarget = CombatManager.Instance.FindNearestEnemy(transform.position, 50);
             _owner.transform.LookAt(CurrentTarget.GetPosition());
         }
-
+        
         public void Attack()
         {
             if (_activeProjectileData == null)

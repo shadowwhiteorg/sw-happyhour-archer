@@ -5,6 +5,7 @@ using UnityEngine;
 using _Game.Interfaces;
 using _Game.Managers;
 using _Game.Utils;
+using Unity.Mathematics.Geometry;
 using Unity.VisualScripting;
 
 namespace _Game.CombatSystem
@@ -111,8 +112,13 @@ namespace _Game.CombatSystem
                 Debug.LogError("Not enough speed to reach the target!");
                 return;
             }
-            if(this.gameObject.activeSelf)
-                StartCoroutine(KinematicMovementCoroutine(velocity, _targetPosition, _target));
+
+            if (this.gameObject.activeSelf)
+            {
+                float mDistSign = Mathf.Sign(_startPosition.magnitude - _targetPosition.magnitude);
+                StartCoroutine(KinematicMovementCoroutine(velocity, _targetPosition, _target, mDistSign));
+                
+            }
         }
         
         private bool CalculateLaunchVelocity(out Vector3 velocity)
@@ -154,15 +160,17 @@ namespace _Game.CombatSystem
 
         
 
-        IEnumerator KinematicMovementCoroutine(Vector3 velocity, Vector3 target, IDamageable targetDamageable)
+        IEnumerator KinematicMovementCoroutine(Vector3 velocity, Vector3 target, IDamageable targetDamageable, float distSign = 1)
         {
-            while (Vector3.Distance(transform.position, target) > 1f)
+            float mDistSign = distSign;
+            while (Vector3.Distance(transform.position, target) > 1f && mDistSign * distSign > 0)
             {
                 _time += Time.deltaTime;
 
                 // Apply arc motion using kinematic equations
                 Vector3 displacement = velocity * _time + Physics.gravity * (0.5f * (_time * _time));
                 transform.position = _startPosition + displacement;
+                mDistSign = Mathf.Sign(transform.position.magnitude - _targetPosition.magnitude);
                 yield return null;
             }
             transform.position = target;
