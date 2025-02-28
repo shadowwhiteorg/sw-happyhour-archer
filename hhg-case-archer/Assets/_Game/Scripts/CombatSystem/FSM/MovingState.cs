@@ -11,7 +11,6 @@ namespace _Game.CombatSystem
             character.CharacterState = CharacterState.Moving;
             character.CharacterModel.PlayWalkAnimation();
             character.MovingActor?.Initialize(character);
-            Debug.Log("Player walk animation");
         }
 
         public void UpdateState(BaseCharacter character)

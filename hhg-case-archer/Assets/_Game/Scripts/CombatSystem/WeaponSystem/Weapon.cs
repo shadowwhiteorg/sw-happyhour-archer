@@ -59,7 +59,7 @@ namespace _Game.CombatSystem
             {
                 if (!_pools.ContainsKey(projectileData.Type))
                 {
-                    _pools[projectileData.Type] = new ObjectPool<Projectile>(projectileData.Prefab.GetComponent<Projectile>(), 10,null);
+                    _pools[projectileData.Type] = new ObjectPool<Projectile>(projectileData.Prefab.GetComponent<Projectile>(), 10,this.transform);
                 }
             }
         }
@@ -67,8 +67,9 @@ namespace _Game.CombatSystem
         public void SetCurrentTarget()
         {
             _currentTarget = CombatManager.Instance.FindNearestEnemy(transform.position, 50);
+            _owner.transform.LookAt(CurrentTarget.GetPosition());
         }
-
+        
         public void Attack()
         {
             if (_activeProjectileData == null)

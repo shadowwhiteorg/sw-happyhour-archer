@@ -15,7 +15,10 @@ namespace _Game.SkillSystem
         [SerializeField] private float cost;
         [SerializeField] private Sprite icon;
         [SerializeField] private List<SkillEffectData> skillEffects;
-        
+        [SerializeField] private bool isFromRage;
+        private BaseSkill _coupleSkill;
+        public BaseSkill CoupleSkill => _coupleSkill;
+        public bool IsFromRage => isFromRage;
         public string SkillName => skillName;
         public string Description => description;
         public float Cooldown => cooldown;
@@ -23,6 +26,9 @@ namespace _Game.SkillSystem
         public SkillType SkillType => skillType;
         public Sprite Icon => icon;
 
+        private int _applicationCount = 1;
+        public int ApplicationCount => _applicationCount;
+        
         public void ApplySkill(BaseCharacter character)
         {
             foreach (var effect in skillEffects)
@@ -37,7 +43,23 @@ namespace _Game.SkillSystem
             {
                 effect.RemoveEffect(character);
             }
-            
+        }
+
+        public void SetCoupleSkill(BaseSkill coupleSkill)
+        {
+            _coupleSkill = coupleSkill;
+        }
+        
+        public BaseSkill CreateDuplicate()
+        {
+            BaseSkill duplicate = Instantiate(this);
+            duplicate.name = this.name + " (Duplicated)";
+            return duplicate;
+        }
+
+        public void RemoveDuplicate()
+        {
+            _applicationCount = 1;
         }
     }
 }

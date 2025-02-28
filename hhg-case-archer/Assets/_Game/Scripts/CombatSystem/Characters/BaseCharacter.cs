@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Collections;
+using System.Linq;
 using _Game.Enums;
 using _Game.Interfaces;
 using _Game.Managers;
 using _Game.DataStructures;
+using _Game.Scripts.UISystem;
 using _Game.SkillSystem;
 using _Game.StatSystem;
+using DamageNumbersPro;
 using UnityEngine;
 
 namespace _Game.CombatSystem
@@ -16,6 +19,9 @@ namespace _Game.CombatSystem
         [SerializeField] private List<BaseSkill> initialSkills;
         [SerializeField] private List<BaseSkill> activeSkills;
         [SerializeField] private CharacterModel characterModel;
+        [SerializeField] private HealthBar healthBar;
+        [SerializeField] private DamageNumber damageNumber;
+        [SerializeField] private DamageNumber burnDamageNumber;
         public CharacterState CharacterState;
         public StatController StatController;
         public MovingActor MovingActor => GetComponent<MovingActor>();
@@ -26,7 +32,7 @@ namespace _Game.CombatSystem
         public float CurrentHealth => _currentHealth;
         public float BaseHealth { get; set; }
         private Dictionary<StatusEffectType, StatusEffect> _activeEffects = new Dictionary<StatusEffectType, StatusEffect>();
-
+        private List<BaseSkill> _duplicatedSkills = new List<BaseSkill>();
 
         private void Start()
         {
@@ -38,11 +44,15 @@ namespace _Game.CombatSystem
             StatController = new StatController(statConfig);
             BaseHealth = StatController.GetStatValue(StatType.Health);
             _currentHealth = BaseHealth;
+            healthBar?.UpdateHealthBar(_currentHealth, BaseHealth);
+            healthBar?.transform.LookAt(Camera.main?.transform);
             foreach (var skill in initialSkills)
             {
                 LearnSkill(skill);
             }
         }
+        
+
         public virtual Vector3 GetPosition()
         {
             return transform.position;
@@ -64,11 +74,16 @@ namespace _Game.CombatSystem
             }
         }
         
+        
+        
+        
         private IEnumerator HandleStatusEffect(StatusEffect effect)
         {
             while (effect.Duration > 0)
             {
-                TakeDamage(effect.DamagePerSecond);
+                if(effect.Type==StatusEffectType.Fire)
+                    burnDamageNumber.Spawn(transform.position + Vector3.up*3f, effect.DamagePerSecond);
+                TakeDamage(effect.DamagePerSecond,true);
                 yield return new WaitForSeconds(1f);
                 effect.Duration -= 1f;
             }
@@ -77,10 +92,12 @@ namespace _Game.CombatSystem
             _activeEffects.Remove(effect.Type);
         }
 
-        public void TakeDamage(float damage)
+        public void TakeDamage(float damage, bool fromStatusEffect = false)
         {
-            Debug.Log("Taking Damage "+damage);
             _currentHealth -= damage;
+            healthBar.UpdateHealthBar(_currentHealth , BaseHealth);
+            if(!fromStatusEffect)
+                damageNumber.Spawn(transform.position+Vector3.up*2.5f, damage);
             if (_currentHealth <= 0)
             {
                 StopAllCoroutines();
@@ -94,7 +111,9 @@ namespace _Game.CombatSystem
 
         protected virtual void Die()
         {
-            // characterModel.PlayDeathAnimation();
+            characterModel.PlayDeathAnimation();
+            healthBar.gameObject.SetActive(false);
+            StartCoroutine(DisableAfterDie());
             EventManager.FireOnTargetDeath(this);
         }
         
@@ -106,8 +125,51 @@ namespace _Game.CombatSystem
 
         public void RemoveSkill(BaseSkill skill)
         {
+            if (AttackingActor.InRage)
+            {
+                skill.CoupleSkill?.RemoveSkill(this);
+                activeSkills.Remove(skill.CoupleSkill);
+            }
             skill.RemoveSkill(this);
             activeSkills.Remove(skill);
+        }
+        
+        private IEnumerator DisableAfterDie()
+        {
+            yield return new WaitForSeconds(1f);
+            while(transform.position.y > -2)
+            {
+                transform.position -= Vector3.up * Time.deltaTime;
+                yield return null;
+            }
+            Destroy(gameObject);
+        }
+        
+        public void DuplicateActiveSkills()
+        {
+            List<BaseSkill> duplicatedSkills = new List<BaseSkill>();
+
+            foreach (var skill in activeSkills)
+            {
+                var duplicatedSkill = skill.CreateDuplicate();
+                duplicatedSkill.SetCoupleSkill(skill);
+                duplicatedSkills.Add(duplicatedSkill);
+            }
+
+            foreach (var duplicatedSkill in duplicatedSkills)
+            {
+                LearnSkill(duplicatedSkill);
+            }
+        }
+        
+        public void RemoveAllDuplicatedSkills()
+        {
+            var mSkillsToRemove = activeSkills.Where(skill => skill.CoupleSkill != null).ToList();
+            foreach (var skill in mSkillsToRemove)
+            {
+                skill.RemoveSkill(this);
+                activeSkills.Remove(skill);
+            }
         }
         
     }

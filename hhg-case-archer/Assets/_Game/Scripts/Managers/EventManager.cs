@@ -15,7 +15,6 @@ namespace _Game.Managers
         
         public static void FireOnMoveStart(BaseCharacter character)
         {
-            Debug.Log("FireOnMoveStart");
             OnMoveStart?.Invoke(character);
         }
         public static void FireOnMoveEnd(BaseCharacter character)
